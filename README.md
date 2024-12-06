@@ -1,15 +1,17 @@
-# Nom du projet
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/oOQR1xPR)
+# StratoPrédiction
 
 ## Membres
 
-- Nom 1
-- Nom 2
-- Nom 3
-- ...
+- Welker Théo
+- Melvi Isha
+- Caputo Dany
+- Imhof Valentin
+- Laville Yanis
 
 ## Description
 
-Description du projet en quelques lignes
+(Cf. README_Init.md)
 
 ## Cahier des charges
 
