@@ -3,14 +3,15 @@
 
 ## Membres
 
-- Nom 1
-- Nom 2
-- Nom 3
-- ...
+- Welker Théo
+- Melvi Isha
+- Caputo Dany
+- Imhof Valentin
+- Laville Yanis
 
 ## Description
 
-Description du projet en quelques lignes
+(Cf. README.Init.md)
 
 ## Cahier des charges
 
