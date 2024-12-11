@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "strato_prediction"
+version = "0.1.0"
+description = "Prédicition météo de la trajectoire d'un ballon sonde"
+authors = ["Théo Welker <theo.welker@heig-vd.ch>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pygrib = "^2.1.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+strato_prediction = "strato_prediction.__main__:main"

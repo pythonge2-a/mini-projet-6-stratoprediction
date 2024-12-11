@@ -1,0 +1,23 @@
+Pas de 0.25° 
+Longitude: Equateur = 40 075[km] --> 0.25° = 27,829 [km]
+Latitude: Méridian = 40 008[km] --> 0.25° = 27,78 [km]
+
+
+HEIG Position:
+latitude: 46.77931012700754
+longitude: 6.659468237172854
+
+Avec pas de 1°:
+latitude min = 46.27931012700754, latitude max = 47.27931012700754
+longitude min = 6.159468237172854, longitude max = 7.159468237172854
+
+Avec pas de 0.5°:
+latitude min = 46.52931012700754, latitude max = 47.02931012700754
+longitude min = 6.409468237172854, longitude max = 6.909468237172854
+
+Avec pas de 0.25°:
+latitude min = 46.65431012700754, latitude max = 46.90431012700754
+longitude min = 6.534468237172854, longitude max = 6.784468237172854
+
+Pour installer des packages: Poetry add "NOM DU PACKAGE"
+GUST/VGRD/UGRD
