@@ -1,17 +1,17 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/oOQR1xPR)
-# Nom du projet
+# StratoPrédiction
 
 ## Membres
 
-- Isha Melvi
-- Yanis Laville
-- Dany Caputo
-- Valentin Imhof
-- Théo Welker
+- Welker Théo
+- Melvi Isha
+- Caputo Dany
+- Imhof Valentin
+- Laville Yanis
 
 ## Description
 
-Utilisation des données NOAA (Vent) pour la prédiction d'un parcout de vol d'un ballon stratosphérique. Pour remettre en contexte le besoin d'un tel système. Les ballons stratosphériques sont utilisés quotidiennement pour la récolte de donné météorologique ainsi que d'autres expériences dans la stratosphère. Le vol du ballon est dit "Libre" car il n'a aucune moyen de naviguer dans l'espace. Il subit obligatoirement les vents et se laisse guider librement. Un système de prédition est intéressant afin de connaitre approximativement le point de chute afin d'éviter les lacs où les montagnes. Certains vols enmènent de l'équipement onéreux et il est nécessaire d'assurer un parcout convenable. Il sera ainsi possible de modifier la date de décollage ou les paramètres de vols (vitesse ascentionelle, etc) pour modifier la trajectoire.
+(Cf. README_Init.md)
 
 ## Cahier des charges
 
