@@ -1,4 +1,8 @@
-import pygrib
+import xarray as xr
+import numpy as np
+#Permet de pouvoir afficher un nb illimité de ligne dans la console
+np.set_printoptions(threshold=np.inf)
+
 class AnalyserGRIB:
     def __init__(self):
         self.uWind = None
@@ -9,41 +13,73 @@ class AnalyserGRIB:
         self.temperature = None
         self.pressure = None
         self.altitude = None
+        self.latitude = None
+        self.longitude = None
 
     def analyser_grib(self, file_path):
-        #filtre zone coordonnées:
-        zlatmin = 46.4008333
-        zlatmax = 46.8072222
-        zlonmin = 6.211111111111111
-        zlonmax = 6.9991666666666665
+        # Utilise cfgrib comme moteur pour ouvrir le fichier GRIB
+        #Filtre permettant de trier le fichier par pression en PA
+        filter_keys = {'typeOfLevel': "isobaricInhPa"}
+        #Ouverture du fichier
+        ds = xr.open_dataset(file_path, engine='cfgrib', filter_by_keys=filter_keys)
+        
+        #print(f"\nVariables disponibles:{sorted(ds.variables)}\n")
+        #print(f"\nisobaricInhPa: {ds.variables['isobaricInhPa']}")
+        #print(f"\nlatitude: {ds.variables['latitude']}")
+        #print(f"\nlongitude: {ds.variables['longitude']}")
+        #print(f"\nstep: {ds.variables['step']}")
+        #print(f"\ntime: {ds.variables['time']}")
+        #print(f"\nu: {ds.variables['u']}")
+        #print(f"\nv: {ds.variables['v']}")
+        #print(f"\nvalid_time: {ds.variables['valid_time']}")
+        
+        varLon = ds.variables['longitude']
+        varLat = ds.variables['latitude']
+        varv = ds.variables['v']
+        varu = ds.variables['u']
+        varIs = ds.variables['isobaricInhPa']
+        
+        print(f"V:{varv.data}")
+        print(f"U:{varu}")
 
-        try:
-            grbs = pygrib.open(file_path)
-            for grb in grbs:
-                print(grb)
-                print(grb.name)
-                if "U component of wind" in grb.name:         
-                    self.uWind = 2          
+        liste1= [] 
+        liste1 = varv.data[0][0]
+        liste2= [] 
+        liste2 = varu.data[0][0]
+        #print(f"longitude:{varLon.data[0]}")
+        #print(f"latitude:{varLat.data[0]}")
+        #print(f"V:{varv.data[0]}")
+        #print(f"U:{varu.data[0]}")
+        print(f"liste1:{liste1}")
+        print(f"liste2:{liste2}")
+        print(f"ziping:{next(zip(liste1,liste2))}")
+        print(f"len lat:{len(varLat.data)}")
+        print(f"len lon:{len(varLon.data)}")
+        print(f"len alt:{len(varu.data)}")
+        print(f"len alt:{len(varIs.data)}")
+        #print(f"len alt:{len(varst.data)}")
+        #print(f"len alt:{len(vart.data)}")
+        #print(f"len alt:{len(varvt.data)}")
+        
+        for alt in range(len(varIs.data)):
+            self.pressure = varIs.data[alt]
+            print(f"alt:{self.pressure}lat:{self.latitude}lon:{self.longitude}")
+            for lat in range(len(varLat.data)):
+                print(f"alt:{self.pressure}lat:{self.latitude}lon:{self.longitude}")
+                """
+                for lon in range(len(varLon.data)):
+                    self.longitude = varLat.data[lon]"""
+        
                     
-                if "V component of wind" in grb.name:
-                    self.vWind = 1 
+        """
+        for lat in range(len(varLat.data)):
+            print(lat)
+            print(f"longitude:{varLat.data[lat]}")
+            for lon in range(len(varLon.data)):
+                for alt in range(len(varIs.data)):
+                    print(f"longitude:{varLon.data[lon]}")
+                    #print(f"U:{varu.data[lat][lon]}")
+                    #print(f"V:{varv.data[lat][lon]}")"""
+            
 
-                self.level = grb.level         
-                self.date = grb.dataDate           
-                self.time = grb.dataTime
-                print(f"vWind: {self.vWind}")
-                print(f"uWind: {self.uWind}")
-                print(f"Level: {self.level}")
-                print(f"Date: {self.date}")
-                print(f"Time: {self.time}")
-            print(dir(grb))
-            data, lats, lons = grb.data(lat1=zlatmin,lat2=zlatmax,lon1=zlonmin,lon2=zlonmax)
-            print(f"data:{data}")
-            print(f"lats:{lats}")
-            print(f"lons:{lons}")
-            print(f"dataDate:{self.date}")
-            print(f"dataTime:{self.time}")
-            print(f"datashape:{data.shape}")
-        except Exception as e:
-            print(f"Erreur lors de l'analyse du fichier GRIB : {e}")
-        return "Données analysées"  
+
