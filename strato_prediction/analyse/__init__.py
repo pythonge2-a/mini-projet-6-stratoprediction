@@ -61,25 +61,19 @@ class AnalyserGRIB:
         #print(f"len alt:{len(vart.data)}")
         #print(f"len alt:{len(varvt.data)}")
         
+        #table = AnalyserGRIB(
+        #    self.uWind = ds.variables['v']
+        #    self.vWind = ds.variables['u']
+        #)
+        
         for alt in range(len(varIs.data)):
             self.pressure = varIs.data[alt]
-            print(f"alt:{self.pressure}lat:{self.latitude}lon:{self.longitude}")
             for lat in range(len(varLat.data)):
-                print(f"alt:{self.pressure}lat:{self.latitude}lon:{self.longitude}")
-                """
+                self.latitude = varLat.data[lat]
                 for lon in range(len(varLon.data)):
-                    self.longitude = varLat.data[lon]"""
-        
-                    
-        """
-        for lat in range(len(varLat.data)):
-            print(lat)
-            print(f"longitude:{varLat.data[lat]}")
-            for lon in range(len(varLon.data)):
-                for alt in range(len(varIs.data)):
-                    print(f"longitude:{varLon.data[lon]}")
-                    #print(f"U:{varu.data[lat][lon]}")
-                    #print(f"V:{varv.data[lat][lon]}")"""
-            
+                    self.longitude = varLon.data[lon]
+                    self.vWind = varv.data[alt][lat][lon]
+                    self.uWind = varu.data[alt][lat][lon]
+                    print(f"alt:{self.pressure} lat:{self.latitude} lon:{self.longitude} U:{self.uWind} V:{self.vWind}")
 
 
