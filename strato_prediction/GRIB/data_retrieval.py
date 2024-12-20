@@ -11,10 +11,12 @@ def load_grib_data(file_path):
 
     # Structure contenant toutes les données grib nécessaires
     data = {
-        'pressure': ds.isobaricInhPa.values,
-        'latitude': ds.latitude.values,
-        'longitude': ds.longitude.values,
-        'u_wind': ds.u.values,
-        'v_wind': ds.v.values
+        'pressure': ds.variables['isobaricInhPa'],
+        'latitude': ds.variables['latitude'],
+        'longitude': ds.variables['longitude'],
+        
+        'u_wind': ds.variables['u'],
+        'v_wind': ds.variables['v'],
+        'temperature': ds.variables['t']
     }
     return data
