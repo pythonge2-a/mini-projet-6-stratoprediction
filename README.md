@@ -10,9 +10,6 @@
 - Laville Yanis
 
 ## Répartiton des tâches
-
-- Dany: Gestions des arguments d'entrée
-- Yanis: Gestions des arguments d'entrée
   
 - Dany et Yanis:
   Conception et mise en œuvre de la logique permettant de traiter les arguments d'entrée du programme.
