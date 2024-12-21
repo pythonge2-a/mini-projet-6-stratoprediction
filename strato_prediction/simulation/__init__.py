@@ -7,6 +7,7 @@ ainsi que quelques fonctions utilitaires de conversions d'unités.
 """
 
 from .simulation import Balloon
+from .utils import prepare_wind_interpolators, prepare_temperature_interpolator
 
 # Pas utile dans ce cas, mais ça fait pro :)
-__all__ = ["Balloon"]
+__all__ = ["Balloon", "prepare_wind_interpolators", "prepare_temperature_interpolator"]

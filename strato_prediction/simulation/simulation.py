@@ -4,6 +4,7 @@ from .utils import Conversion
 class Balloon:
     def __init__(self, start_lon, start_lat, pressure_start, ascendion_speed=5, time_step=60):
         self.pressure = pressure_start
+        self.altitude = 0
         self.lat = start_lat
         self.lon = start_lon
         self.pressure_alt0 = 1000
@@ -32,16 +33,46 @@ class Balloon:
         d_lat = self.u_speed_interp*self.time_step
         d_lon = self.v_speed_interp*self.time_step
         
-        altitude = conversions.pressure_to_altitude(self.pressure, self.temperature_alt0_interp)
+        self.altitude = conversions.pressure_to_altitude(self.pressure, self.temperature_alt0_interp)
         d_lat_degrees = conversions.meters_to_latitude(d_lat)
-        d_lon_degrees = conversions.meters_to_longitude(d_lon)
+        d_lon_degrees = conversions.meters_to_longitude(d_lon, self.lat)
         
-        new_altitude = float(altitude + self.z_speed*self.time_step)
+        new_altitude = float(self.altitude + self.z_speed*self.time_step)
         new_latitude = float(self.lat + d_lat_degrees)
         new_longitude = float(self.lon+ d_lon_degrees)
+        new_pressure = conversions.altitude_to_pressure(new_altitude, self.temperature_alt0_interp)
         
+        # if (new_latitude) > 48:
+        #     self.lat = 48
+        # else:
+        #     self.lat = new_latitude
+        # if (new_latitude) < 45:
+        #     self.lat = 45
+        # else:
+        #     self.lat = new_latitude
+            
+        # if (new_longitude) > 11:
+        #     self.lon = 11
+        # else:
+        #     self.lon = new_longitude
+        # if (new_longitude) < 5:
+        #     self.lon = 5
+        # else:
+        #     self.lon = new_longitude
+        
+        # if new_pressure < 1:
+        #     self.altitude = 1
+        # else:
+        #     self.altitude = new_altitude
+        # if new_pressure > 1000:
+        #     self.altitude = 1000
+        # else:
+        #     self.altitude = new_altitude
+        
+        self.altitude = new_altitude
+        self.pressure = new_pressure
+        self.lat = new_latitude
+        self.lon = new_longitude
         self.trajectory["altitudes"].append(new_altitude)
         self.trajectory["latitudes"].append(new_latitude)
         self.trajectory["longitudes"].append(new_longitude)
-        
-        
