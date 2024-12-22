@@ -11,9 +11,17 @@ def load_grib_data(file_path):
         'shortName': ['u', 'v', 't']  # On ne charge que les variables dont on a besoin
     }
     ds = xr.open_dataset(file_path, engine='cfgrib', filter_by_keys=filter_keys, backend_kwargs={'errors': 'ignore'})
-    print(ds.time.values)
-    print(ds.step.values)
-    print(f"valid_time:{ds.valid_time}")
+    # print(f"time:{ds.time.values}")
+    # print(f"step:{ds.step.values}")
+    # print(f"dataLat:{ds.latitude}")
+    # print(f"dataLatU:{ds.u.values}")
+    # print(f"dataLatU:{ds.u}")
+    # print(f"dataLon:{ds.longitude}")
+    # print(f"dataLonV:{ds.v}")
+    # print(f"dataLonV:{ds.v.values}")
+    print(f"dataLat:{ds.latitude.values}")
+    print(f"dataLon:{ds.longitude.values}")
+    print(f"dataLon:{ds.isobaricInhPa.values}")
     
     # Structure contenant toutes les données grib nécessaires
     data = {

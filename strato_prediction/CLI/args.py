@@ -37,10 +37,10 @@ def args_retrieval():
             print("Recommencer") 
     elif validation in ["NO","N"]:
         print("Coordonnées initiales") 
-        init_altitude_hpa = 914.40
+        init_altitude_hpa = 600
         init_latitude=45.8
         init_longitude=5.16
-        file_path = "assets/ALL_PRESSURES.f012"  # Utilisez un chemin de fichier de test
+        file_path = "assets/SEMI_PRESSURES.f012"  # Utilisez un chemin de fichier de test
     
     return init_altitude_hpa,init_latitude,init_longitude,file_path
 

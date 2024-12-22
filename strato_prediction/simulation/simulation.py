@@ -23,6 +23,8 @@ class Balloon:
     def get_wind_at_point(self, interpolatorU, interpolatorV):
         self.u_speed_interp = interpolatorU((self.pressure, self.lat, self.lon))
         self.v_speed_interp = interpolatorV((self.pressure, self.lat, self.lon))
+        # print(f"U:{self.u_speed_interp}")
+        # print(f"V:{self.v_speed_interp}")
 
     def get_temperature_at_point(self, temp_interp):
         self.temperature_alt0_interp = temp_interp((self.pressure_alt0, self.lat, self.lon))
@@ -30,12 +32,14 @@ class Balloon:
     def get_next_point(self):
         conversions = Conversion()
         
-        d_lat = self.u_speed_interp*self.time_step
-        d_lon = self.v_speed_interp*self.time_step
+        d_lat = self.v_speed_interp*self.time_step
+        d_lon = self.u_speed_interp*self.time_step
         
         self.altitude = conversions.pressure_to_altitude(self.pressure, self.temperature_alt0_interp)
         d_lat_degrees = conversions.meters_to_latitude(d_lat)
         d_lon_degrees = conversions.meters_to_longitude(d_lon, self.lat)
+        print(f"d_lat_deg:{self.v_speed_interp}")
+        print(f"d_lon_deg:{self.u_speed_interp}")
         
         new_altitude = float(self.altitude + self.z_speed*self.time_step)
         new_latitude = float(self.lat + d_lat_degrees)
