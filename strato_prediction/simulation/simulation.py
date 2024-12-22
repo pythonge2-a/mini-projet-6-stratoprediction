@@ -7,26 +7,31 @@ class Balloon:
         self.lon = lon_start
         self.lat = lat_start
         self.pressure = pressure_start
+        self.altitude = pressure_to_altitude(self.pressure)
         self.z_speed = ascendion_speed
         self.u_speed_interp = None
         self.v_speed_interp = None
         self.time_step = time_step
-        self.trajectory = None #list coord 3d (lon, lat, pres/alt)
+        self.trajectory = {
+            'longitudes' : [self.lon,],
+            'latitudes' : [self.lat,],
+            'altitudes' : [self.altitude,]
+        } #list coord 3d (lon, lat, pres/alt)
 
     #calculations
 
-    def get_wind_at_point(self):
+    def get_wind_at_point(self, u_interpolator, v_interpolator):
         """Obtient les composantes du vent à un point donné"""
         point = np.array([self.pressure, self.lat, self.lon])
         return {
-            'u': self.u_interpolator(point),
-            'v': self.v_interpolator(point)
+            'u': u_interpolator(point),
+            'v': v_interpolator(point)
         }
     
-    def get_next_point(self):
+    def get_next_point(self, u_interpolator, v_interpolator):
         geod = Geod(ellps="WGS84")
 
-        wind = self.get_wind_at_point()
+        wind = self.get_wind_at_point(u_interpolator, v_interpolator)
         u_wind = wind['u']
         v_wind = wind['v']
 
@@ -47,5 +52,14 @@ class Balloon:
         delta_altitude = self.z_speed * self.time_step  # En mètres
         altitude_new = pressure_to_altitude(self.pressure) + delta_altitude
         pressure_new = altitude_to_pressure(altitude_new)
+
+        self.pressure = pressure_new
+        self.altitude = altitude_new
+        self.lon = lon_new
+        self.lat = lat_new 
+
+        self.trajectory['longitudes'].append(lon_new)
+        self.trajectory['latitudes'].append(lat_new)
+        self.trajectory['altitudes'].append(altitude_new)
 
         return lat_new, lon_new, altitude_new, pressure_new
