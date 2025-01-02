@@ -1,25 +1,5 @@
-from scipy.interpolate import RegularGridInterpolator
 from metpy.calc import pressure_to_height_std, height_to_pressure_std
 from metpy.units import units
-
-def prepare_wind_interpolators(data):
-    """Prépare les interpolateurs pour U et V"""
-    u_interpolator = RegularGridInterpolator(
-        (data['pressure'], data['latitude'], data['longitude']),
-        data['u_wind'],
-        method='cubic',
-        bounds_error=False,
-        fill_value=None
-    )
-    
-    v_interpolator = RegularGridInterpolator(
-        (data['pressure'], data['latitude'], data['longitude']),
-        data['v_wind'],
-        method='cubic',
-        bounds_error=False,
-        fill_value=None
-    )
-    return u_interpolator, v_interpolator
 
 def pressure_to_altitude(pressure):
     altitude = pressure_to_height_std(pressure*units.hPa)
