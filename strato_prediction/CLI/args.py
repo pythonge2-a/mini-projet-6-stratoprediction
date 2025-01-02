@@ -37,7 +37,9 @@ def args_retrieval():
             print("Recommencer") 
     elif validation in ["NO","N"]:
         print("Coordonnées initiales") 
-    
-
+    #return start_lat
+                
+#start_lat = args_retrieval()
+#print(f"Il a comme latitude : {start_lat}")
 
 # On veut un return avec lat_start (float), lon_start (float), altitude [m](float)
