@@ -2,17 +2,18 @@ import numpy as np
 from pyproj import Geod
 from scipy.interpolate import RegularGridInterpolator, interp1d
 import xarray as xr 
+from .utils import calculate_air_density
 
 class Balloon:
-    def __init__(self, data, lon_start, lat_start, pressure_start, ascension_speed=5., time_step=60., mass=5, parachute_surface=1, drag_coeff=1.5):
+    def __init__(self, data, lon_start, lat_start, pressure_start, w_speed=5., time_step=1., mass=1.14, parachute_surface=1.13, drag_coeff=1.5):
         self.lon = lon_start
         self.lat = lat_start
         self.pressure = pressure_start
         self.time_flying = 0
-        self.ascension_speed = ascension_speed
+        self.w_speed = w_speed
         self.u_interpolator = None
         self.v_interpolator = None
-        self.z_interpolator = None
+        self.w_interpolator = None
         self.gph_interpolator = None
         self.surface_interpolator = None
         self.humidity_interpolator = None
@@ -29,9 +30,9 @@ class Balloon:
         # Variables nécassaires pour la phase de descente
         self.mass = mass
         self.gravity = 9.80665 # approximation. A ajuster plus tard pour plus de précision
-        self.R = 287  # Constante gaz parfait. Approximation pour air sec. A ajuster plus tard pour plus de précision
         self.C = drag_coeff # approximation. A ajuster plus tard pour plus de précision
         self.parachute_surface = parachute_surface
+        self.descent_time = 0
 
     def reset(self, lon_start, lat_start, pressure_start):
         self.lon = lon_start
@@ -63,9 +64,9 @@ class Balloon:
             fill_value=None
         )
 
-        self.z_interpolator = RegularGridInterpolator(
+        self.w_interpolator = RegularGridInterpolator(
             (data['pressure'], data['latitude'], data['longitude']),
-            data['z_wind'],
+            data['w_wind'],
             method='cubic',
             bounds_error=False,
             fill_value=None
@@ -112,7 +113,7 @@ class Balloon:
     def get_wind_at_point(self):
         """Obtient les composantes du vent à un point donné"""
         point = np.array([self.pressure, self.lat, self.lon])
-        return self.u_interpolator(point)[0], self.v_interpolator(point)[0], self.z_interpolator(point)[0]
+        return self.u_interpolator(point)[0], self.v_interpolator(point)[0], self.w_interpolator(point)[0]
     
     def get_gph_at_point(self):
         point = np.array([self.pressure, self.lat, self.lon])
@@ -121,14 +122,32 @@ class Balloon:
     def get_pressure_at_point(self, data):
         pressure_interpolator = self.prepare_pressure_interpolator(data)
         return pressure_interpolator(self.altitude)
+    
+    def get_temp_at_point(self):
+        point = np.array([self.pressure, self.lat, self.lon])
+        return self.temp_interpolator(point)[0]
+    
+    def get_humidity_at_point(self):
+        point = np.array([self.pressure, self.lat, self.lon])
+        return self.humidity_interpolator(point)[0]
+    
 
     def get_fall_speed_at_point(self):
-        pass
+        # Calcul de la vitesse terminal
+        temp = self.get_temp_at_point()
+        humidity = self.get_humidity_at_point()
+        rho = calculate_air_density(self.pressure, temp, humidity)
+        k = 0.5 * self.C * rho * self.parachute_surface
+        v_t = np.sqrt(self.mass * self.gravity / k)
 
-    def get_next_point(self, data):
+        # Temps et vitesse en fonction du temps
+        self.descent_time += self.time_step
+        self.w_speed = - v_t * np.tanh((self.gravity / v_t) * self.descent_time)
+        print(self.w_speed)
+    def get_next_point(self, data, down):
         geod = Geod(ellps="WGS84")
 
-        u_wind, v_wind, z_wind = self.get_wind_at_point()
+        u_wind, v_wind, w_wind = self.get_wind_at_point()
         delta_lon = u_wind * self.time_step  # Distance est-ouest (m/s * s)
         delta_lat = v_wind * self.time_step  # Distance nord-sud (m/s * s)
 
@@ -140,12 +159,9 @@ class Balloon:
         lon_new, lat_new, _ = geod.fwd(self.lon, self.lat, azimut, distance)
         
 
-        # if(up):
-        #     delta_altitude = self.ascension_speed * self.time_step  # En mètres
-        # else:
-        #     fall_speed = self.get_fall_speed_at_point()
-        #     delta_altitude = fall_speed * self.time_step
-        delta_altitude = (self.ascension_speed + z_wind) * self.time_step  # En mètres
+        if(down):
+            self.get_fall_speed_at_point()
+        delta_altitude = (self.w_speed + w_wind) * self.time_step  # En mètres
         self.altitude = self.get_gph_at_point()
         altitude_new = self.altitude + delta_altitude
 
@@ -160,7 +176,6 @@ class Balloon:
         self.lon = lon_new
         self.lat = lat_new 
         self.time_flying = time_new
-        print(self.trajectory)
 
         # Ajout du point dans trajectoire
         self.trajectory['longitudes'].append(lon_new)
