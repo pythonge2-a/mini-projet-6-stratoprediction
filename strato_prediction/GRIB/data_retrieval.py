@@ -23,7 +23,7 @@ def load_grib_data(file_path):
         'u_wind': ds_pressure_levels.u.values,
         'v_wind': ds_pressure_levels.v.values,
         'surface': ds_surface_level.orog.values,
-        'z_wind': ds_pressure_levels.wz.values,
+        'w_wind': ds_pressure_levels.wz.values,
         'humidity': ds_pressure_levels.r.values,
         'temp': ds_pressure_levels.t.values
     }

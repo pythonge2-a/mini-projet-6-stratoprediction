@@ -1,7 +1,6 @@
 import numpy as np
 from pyproj import Geod
 from scipy.interpolate import RegularGridInterpolator, interp1d
-import xarray as xr 
 from .utils import calculate_air_density
 
 class Balloon:
@@ -53,7 +52,7 @@ class Balloon:
             data['u_wind'],
             method='cubic',
             bounds_error=False,
-            fill_value=None
+            fill_value=69420
         )
         
         self.v_interpolator = RegularGridInterpolator(
@@ -61,7 +60,7 @@ class Balloon:
             data['v_wind'],
             method='cubic',
             bounds_error=False,
-            fill_value=None
+            fill_value=69420
         )
 
         self.w_interpolator = RegularGridInterpolator(
@@ -69,7 +68,7 @@ class Balloon:
             data['w_wind'],
             method='cubic',
             bounds_error=False,
-            fill_value=None
+            fill_value=69420
         )
 
         self.gph_interpolator = RegularGridInterpolator(
@@ -77,7 +76,7 @@ class Balloon:
             data['gph'],
             method='linear',
             bounds_error=False,
-            fill_value=None
+            fill_value=69420
         )
 
         self.surface_interpolator = RegularGridInterpolator(
@@ -85,7 +84,7 @@ class Balloon:
             data['surface'],
             method='cubic',
             bounds_error=False,
-            fill_value=None
+            fill_value=69420
         )
 
         self.humidity_interpolator = RegularGridInterpolator(
@@ -93,7 +92,7 @@ class Balloon:
             data['humidity'],
             method='cubic',
             bounds_error=False,
-            fill_value=None
+            fill_value=69420
         )
 
         self.temp_interpolator = RegularGridInterpolator(
@@ -101,7 +100,7 @@ class Balloon:
             data['temp'],
             method='cubic',
             bounds_error=False,
-            fill_value=None
+            fill_value=69420
         )
 
     def prepare_pressure_interpolator(self, data):
@@ -144,6 +143,7 @@ class Balloon:
         self.descent_time += self.time_step
         self.w_speed = - v_t * np.tanh((self.gravity / v_t) * self.descent_time)
         print(self.w_speed)
+        
     def get_next_point(self, data, down):
         geod = Geod(ellps="WGS84")
 

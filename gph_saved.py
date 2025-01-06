@@ -4,7 +4,7 @@ from scipy.interpolate import RegularGridInterpolator, interp1d
 from strato_prediction.GRIB import load_grib_data
 
 # Chargement du fichier GRIB (avec cfgrib)
-file_path = "assets/gfs.t06z.pgrb2.0p25.f004"
+file_path = "assets/gfs.t12z.pgrb2.0p25(4).f000"
 data = load_grib_data(file_path)
 
 # Créer un interpolateur 3D avec RegularGridInterpolator
@@ -21,7 +21,7 @@ gph_interpolator = RegularGridInterpolator(
 
 # Coordonnées cibles
 lat_target = 47.1
-lon_target = 47.1
+lon_target = 7.1
 
 points = np.array([data['pressure'], np.full_like(data['pressure'], lat_target), np.full_like(data['pressure'], lon_target)]).T
 #point = np.array([pressure_at_target,lat_target,lon_target])
