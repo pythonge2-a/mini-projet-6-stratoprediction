@@ -24,3 +24,9 @@ ENV/
 # Exclude system-specific files
 Thumbs.db
 desktop.ini
+
+# Exclude spcific files and folders
+assets/
+test_isha.py
+tests_geo.py
+gph_saved.py
