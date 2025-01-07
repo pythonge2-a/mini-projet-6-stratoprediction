@@ -1,0 +1,26 @@
+# Exclude Python cache files and folders
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Exclude virtual environment folders
+env/
+venv/
+ENV/
+.VENV/
+
+# Exclude VS Code-specific files
+.vscode/
+
+# Exclude logs and temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.DS_Store
+
+# Exclude system-specific files
+Thumbs.db
+desktop.ini
