@@ -10,6 +10,15 @@ def is_float(string):
         return True
     except ValueError:
         return False
+    
+def is_valid_time(time_str):
+    """Valide si une chaîne est au format HH:MM:SS."""
+    try:
+        hours, minutes, seconds = map(int, time_str.split(":"))
+        return 0 <= hours < 24 and 0 <= minutes < 60 and 0 <= seconds < 60
+    except ValueError:
+        return False
+    
 
 while True:
     result = radiolist_dialog(
@@ -55,6 +64,28 @@ while True:
             title="Coordonnées initiales",
             text="Mauvaise input. Entrez la pression au format float.",
             ).run()
+
+        drag_coefficient = input_dialog(
+        title="Coefficient de traînée",
+        text="Entrez le coefficient de traînée au format float.",
+        ).run()
+        while(not is_float(drag_coefficient)) :
+            pressure_str = input_dialog(
+            title="Coordonnées initiales",
+            text="Mauvaise input. Entrez le coefficient de traînée au format float.",
+            ).run()
+
+        launch_time = input_dialog(
+        title="Heure de départ",
+        text="Entrez l'heure de départ au format (HH:MM:SS)",
+        ).run()
+        while(not is_valid_time(launch_time)) :
+            launch_time = input_dialog(
+            title="heure de départ",
+            text="Mauvaise input. Entrez l'heure de départ au format HH:MM:SS.",
+            ).run()
+
+
         lon_start=float(lon_str)
         lat_start=float(lat_str)
         pressure_start=float(pressure_str)
