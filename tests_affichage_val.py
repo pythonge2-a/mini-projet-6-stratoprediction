@@ -8,7 +8,7 @@ import http.server
 import socketserver
 
 if(0):
-    fig = plt.figure() 
+    fig = plt.figure()
 
     # Définir l'axe 3D
     ax = plt.axes(projection='3d')
@@ -39,6 +39,12 @@ if(0):
 
 # Données de trajectoire
 trajectory = {
+    'longitudes': [6.2000, 6.2200, 6.2400, 6.2600, 6.2800, 6.3000, 6.3079, 6.3100, 6.3150, 6.3200, 6.3250, 6.3300, 6.3350, 6.3400, 6.3450],
+    'latitudes': [46.4000, 46.4200, 46.4400, 46.4600, 46.4800, 46.5000, 46.5091, 46.5100, 46.5150, 46.5200, 46.5250, 46.5300, 46.5350, 46.5400, 46.5450],
+    'altitudes': [100, 1000, 5000, 10000, 15000, 20000, 32001, 25000, 20000, 15000, 10000, 5000, 2000, 1000, 100],
+    'times': [0, 60.0, 120.0, 180.0, 240.0, 300.0, 360.0, 420.0, 480.0, 540.0, 600.0, 660.0, 720.0, 780.0, 840.0]
+}
+trajectory1 = {
     'longitudes': [10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9, 11],
     'latitudes': [30.0, 30.1, 30.2, 30.3, 30.4, 30.5, 30.6, 30.7, 30.8, 30.9, 31], 
     'altitudes': [100, 1000, 5000, 10000, 15000, 32001, 22200, 18000, 12000, 5000],
@@ -73,7 +79,7 @@ for i, (lat, lon, alt) in enumerate(zip(latitudes, longitudes, altitudes)):
         icon_url = "Miscellaneous/explosion.png"
         custom_icon = fm.CustomIcon(icon_url, icon_size=(30, 30))
     else:
-        custom_icon = fm.Icon(color="blue", icon="circle", icon_size=(10, 10))
+        custom_icon = fm.Icon(color="blue", icon="circle", icon_size=(20, 20))
         
     fm.Marker(
         location=[lat, lon],
