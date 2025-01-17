@@ -1,5 +1,18 @@
 import readchar
 def args_retrieval():
+    args = {
+            'start_pressure': 0,
+            'start_altitude':0,
+            'init_latitude': 0,
+            'init_longitude': 0,
+            'ascent_rate':0,
+            'burst_pression':0,
+            'burst_altitude':0,
+            'date': "",
+            'time':"",
+            'cycle': "",
+            'offset_time': "",
+        }
     
     while True:
         validation = input("Voulez-vous entrer des coordonnées de départ? [YES/NO] [Y/N]\n").strip().upper()
@@ -10,19 +23,17 @@ def args_retrieval():
             
     if validation in ["YES","Y"]:
         while True:
-            start_lat = input_coordinates("latitude")
-            print(f"\nLatitude de départ: {start_lat}")
-            start_long = input_coordinates("longitude")
-            print(f"\nlongitude de départ: {start_long}")
-            start_pres, start_alt= input_altitude()
-            ascent_rate = input_ascent_rate()
-            burst_pression, burst_altitude = input_burst_altitude(start_alt, start_pres)
-            launch_date = input_launch_date()
-            launch_time= input_launch_time()
+            args['init_latitude']=input_coordinates("latitude")
+            args['init_longitude'] = input_coordinates("longitude")
+            args['start_pressure'], args['start_altitude']= input_altitude()
+            args['ascent_rate'] = input_ascent_rate()
+            args['burst_pression'], args['burst_altitude'] = input_burst_altitude(args['start_altitude'], args['start_pressure'])
+            args['date'] = input_launch_date()
+            args['offset_time']= input_launch_time()
 
-            print(f"Les coordonnées de départ sont:\n - Latitude: {start_lat}\n - Longitude: {start_long}\n - Altitude: {start_alt}\n - Pressure: {start_pres}\n")
-            print(f"La date de départ est:\n - Date: {launch_date}\n - Heure {launch_time}\n")
-            print(f"Les paramètres de départ sont:\n - Vitesse d'ascension: {ascent_rate}\n - Altitude d'explosion: {burst_altitude}\n - Pression d'explosion: {burst_pression}\n")
+            print(f"Les coordonnées de départ sont:\n - Latitude: {args['init_latitude']}\n - Longitude: {args['init_longitude']}\n - Altitude: {args['start_altitude']}\n - Pressure: {args['start_pressure']}\n")
+            print(f"La date de départ est:\n - Date: {args['date']}\n - Heure {args['date']}\n")
+            print(f"Les paramètres de départ sont:\n - Vitesse d'ascension: {args['ascent_rate']}\n - Altitude d'explosion: {['burst_altitude']}\n - Pression d'explosion: {args['burst_pression']}\n")
             
 
             while True:
@@ -38,15 +49,19 @@ def args_retrieval():
                 pass
     elif validation in ["NO","N"]:
         print("Coordonnées initiales") 
-        start_pres = 995.4
-        init_latitude=22
-        init_longitude=12
+        args['init_latitude'] = 22
+        args['init_longitude'] = 12
+        args['start_pressure'] = 995.4
+        args['ascent_rate'] = [5]
+        args['burst_altitude'] = 32000
+        args['date'] = "20250111"
+        args['time'] = 30600
         
-        date = "20241224"
-        cycle = "12"
-        offset_time = "007" 
+        args['cycle'] = "12"
+        args['offset_time']= 20
+        
     
-    return start_pres,init_latitude,init_longitude, date, cycle, offset_time
+    return args
 
 def input_coordinates(type_coordinates):
     resultat = ""

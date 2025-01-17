@@ -159,7 +159,7 @@ class Balloon:
         lon_new, lat_new, _ = geod.fwd(self.lon, self.lat, azimut, distance)
         
 
-        if(down):
+        if(down): 
             self.get_fall_speed_at_point()
         delta_altitude = (self.w_speed + w_wind) * self.time_step  # En mètres
         self.altitude = self.get_gph_at_point()

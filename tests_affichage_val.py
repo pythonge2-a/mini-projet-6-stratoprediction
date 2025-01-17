@@ -7,8 +7,11 @@ from folium.plugins import AntPath, Fullscreen, GroupedLayerControl, MiniMap, Me
 import http.server
 import socketserver
 
-if(0):
-    fig = plt.figure()
+import numpy as np
+#Permet de pouvoir afficher un nb illimité de ligne dans la console
+np.set_printoptions(threshold=np.inf)
+
+fig = plt.figure() 
 
     # Définir l'axe 3D
     ax = plt.axes(projection='3d')
