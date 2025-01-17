@@ -44,18 +44,6 @@ trajectory = {
     'altitudes': [100, 1000, 5000, 10000, 15000, 20000, 32001, 25000, 20000, 15000, 10000, 5000, 2000, 1000, 100],
     'times': [0, 60.0, 120.0, 180.0, 240.0, 300.0, 360.0, 420.0, 480.0, 540.0, 600.0, 660.0, 720.0, 780.0, 840.0]
 }
-trajectory1 = {
-    'longitudes': [10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9, 11],
-    'latitudes': [30.0, 30.1, 30.2, 30.3, 30.4, 30.5, 30.6, 30.7, 30.8, 30.9, 31], 
-    'altitudes': [100, 1000, 5000, 10000, 15000, 32001, 22200, 18000, 12000, 5000],
-    'times': [0, 60.0, 120.0, 180.0, 240.0, 300.0, 360.0, 420.0, 480.0, 540.0]
-}
-trajectoryDescent = {
-    'longitudes': [11, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7, 11.8, 11.9, 12],
-    'latitudes': [31, 31.1, 31.2, 31.3, 31.4, 31.5, 31.6, 31.7, 31.8, 31.9, 32], 
-    'altitudes': [32001, 15000, 8000, 6000, 3230, 3000, 2000, 1000, 800, 500],
-    'times': [540, 600.0, 660.0, 720.0, 780.0, 840.0, 900.0, 960.0, 1020.0, 1080.0]
-}
 
 # Création des groupes de couches pour les éléments de la carte
 fg1 = fm.FeatureGroup(name='Coordonnées')
@@ -78,8 +66,12 @@ for i, (lat, lon, alt) in enumerate(zip(latitudes, longitudes, altitudes)):
     elif alt >= 32000:
         icon_url = "Miscellaneous/explosion.png"
         custom_icon = fm.CustomIcon(icon_url, icon_size=(30, 30))
+    elif trajectory['altitudes'][i] == trajectory['altitudes'][-1]:
+        icon_url = "Miscellaneous/endflag.png"
+        custom_icon = fm.CustomIcon(icon_url, icon_size=(30, 60))
     else:
-        custom_icon = fm.Icon(color="blue", icon="circle", icon_size=(20, 20))
+        icon_url = "Miscellaneous/blackcircle.png"
+        custom_icon = fm.CustomIcon(icon_url, icon_size=(10, 10))
         
     fm.Marker(
         location=[lat, lon],
