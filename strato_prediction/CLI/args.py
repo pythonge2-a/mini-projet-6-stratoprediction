@@ -51,7 +51,7 @@ def args_retrieval():
         print("Coordonnées initiales") 
         args['init_latitude'] = 22
         args['init_longitude'] = 12
-        args['start_pressure'] = 995.4
+        args['start_pressure'] = 700
         args['ascent_rate'] = [5]
         args['burst_altitude'] = 32000
         args['date'] = "20250111"

@@ -4,7 +4,7 @@ from scipy.interpolate import RegularGridInterpolator, interp1d
 from .utils import calculate_air_density
 
 class Balloon:
-    def __init__(self, data, lon_start, lat_start, pressure_start, w_speed=5., time_step=1., mass=1.14, parachute_surface=1.13, drag_coeff=1.5):
+    def __init__(self, data, lon_start, lat_start, pressure_start, w_speed=5.6, time_step=1., mass=1.14, parachute_surface=1.13, drag_coeff=1.5):
         self.lon = lon_start
         self.lat = lat_start
         self.pressure = pressure_start
@@ -110,7 +110,6 @@ class Balloon:
         return pressure_interpolator
 
     def get_wind_at_point(self):
-        """Obtient les composantes du vent à un point donné"""
         point = np.array([self.pressure, self.lat, self.lon])
         return self.u_interpolator(point)[0], self.v_interpolator(point)[0], self.w_interpolator(point)[0]
     
@@ -144,7 +143,7 @@ class Balloon:
         self.w_speed = - v_t * np.tanh((self.gravity / v_t) * self.descent_time)
         print(self.w_speed)
         
-    def get_next_point(self, data, down):
+    def get_next_point(self, data, down=0):
         geod = Geod(ellps="WGS84")
 
         u_wind, v_wind, w_wind = self.get_wind_at_point()
@@ -159,7 +158,7 @@ class Balloon:
         lon_new, lat_new, _ = geod.fwd(self.lon, self.lat, azimut, distance)
         
 
-        if(down): 
+        if(down):
             self.get_fall_speed_at_point()
         delta_altitude = (self.w_speed + w_wind) * self.time_step  # En mètres
         self.altitude = self.get_gph_at_point()

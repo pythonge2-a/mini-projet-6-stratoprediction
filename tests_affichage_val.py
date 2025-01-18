@@ -12,7 +12,7 @@ import numpy as np
 np.set_printoptions(threshold=np.inf)
 
 fig = plt.figure() 
-
+if(0):
     # Définir l'axe 3D
     ax = plt.axes(projection='3d')
 
