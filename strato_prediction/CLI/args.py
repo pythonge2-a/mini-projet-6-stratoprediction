@@ -3,8 +3,8 @@ def args_retrieval():
     args = {
             'start_pressure': 0,
             'start_altitude':0,
-            'init_latitude': 0,
-            'init_longitude': 0,
+            'start_lat': 0,
+            'start_lon': 0,
             'ascent_rate':0,
             'burst_pression':0,
             'burst_altitude':0,
@@ -23,15 +23,15 @@ def args_retrieval():
             
     if validation in ["YES","Y"]:
         while True:
-            args['init_latitude']=input_coordinates("latitude")
-            args['init_longitude'] = input_coordinates("longitude")
+            args['start_lat']=input_coordinates("latitude")
+            args['start_lon'] = input_coordinates("longitude")
             args['start_pressure'], args['start_altitude']= input_altitude()
             args['ascent_rate'] = input_ascent_rate()
             args['burst_pression'], args['burst_altitude'] = input_burst_altitude(args['start_altitude'], args['start_pressure'])
             args['date'] = input_launch_date()
             args['offset_time']= input_launch_time()
 
-            print(f"Les coordonnées de départ sont:\n - Latitude: {args['init_latitude']}\n - Longitude: {args['init_longitude']}\n - Altitude: {args['start_altitude']}\n - Pressure: {args['start_pressure']}\n")
+            print(f"Les coordonnées de départ sont:\n - Latitude: {args['start_lat']}\n - Longitude: {args['start_lon']}\n - Altitude: {args['start_altitude']}\n - Pressure: {args['start_pressure']}\n")
             print(f"La date de départ est:\n - Date: {args['date']}\n - Heure {args['date']}\n")
             print(f"Les paramètres de départ sont:\n - Vitesse d'ascension: {args['ascent_rate']}\n - Altitude d'explosion: {['burst_altitude']}\n - Pression d'explosion: {args['burst_pression']}\n")
             
@@ -49,13 +49,13 @@ def args_retrieval():
                 pass
     elif validation in ["NO","N"]:
         print("Coordonnées initiales") 
-        args['init_latitude'] = 22
-        args['init_longitude'] = 12
+        args['start_lat'] = 22
+        args['start_lon'] = 12
         args['start_pressure'] = 700
         args['ascent_rate'] = [5]
-        args['burst_altitude'] = 32000
+        args['burst_altitude'] = 2000
         args['date'] = "20250111"
-        args['time'] = 30600
+        args['time'] = 32350
         
         args['cycle'] = "12"
         args['offset_time']= 20

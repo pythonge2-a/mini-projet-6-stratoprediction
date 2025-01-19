@@ -4,10 +4,10 @@ from scipy.interpolate import RegularGridInterpolator, interp1d
 from .utils import calculate_air_density
 
 class Balloon:
-    def __init__(self, data, lon_start, lat_start, pressure_start, w_speed=5.6, time_step=1., mass=1.14, parachute_surface=1.13, drag_coeff=1.5):
-        self.lon = lon_start
-        self.lat = lat_start
-        self.pressure = pressure_start
+    def __init__(self, data, start_lon, start_lat, start_pressure, w_speed=5.6, time_step=1., mass=1.14, parachute_surface=1.13, drag_coeff=1.5):
+        self.lon = start_lon
+        self.lat = start_lat
+        self.pressure = start_pressure
         self.time_flying = 0
         self.w_speed = w_speed
         self.u_interpolator = None
@@ -33,10 +33,10 @@ class Balloon:
         self.parachute_surface = parachute_surface
         self.descent_time = 0
 
-    def reset(self, lon_start, lat_start, pressure_start):
-        self.lon = lon_start
-        self.lat = lat_start
-        self.pressure = pressure_start
+    def reset(self, start_lon, start_lat, start_pressure):
+        self.lon = start_lon
+        self.lat = start_lat
+        self.pressure = start_pressure
         self.time_flying = 0
         self.altitude = self.get_gph_at_point()
         self.trajectory = {

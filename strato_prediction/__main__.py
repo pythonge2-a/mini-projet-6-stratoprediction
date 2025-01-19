@@ -11,7 +11,7 @@ np.set_printoptions(threshold=np.inf)
 
 def main():
     args = args_retrieval()
-    geo_bounds = get_bounding_square(args['init_latitude'], args['init_longitude'])
+    geo_bounds = get_bounding_square(args['start_lat'], args['start_lon'])
     current_file_path,next_file_path = download_grib_file(args['date'],
                                                           args['cycle'],
                                                           args['offset_time'],
@@ -21,11 +21,11 @@ def main():
                                          next_file_data, 
                                          surface_data,
                                          args['time']%3600, 
-                                         args['init_latitude'], 
-                                         args['init_longitude'], 
+                                         args['start_lat'], 
+                                         args['start_lon'], 
                                          args['start_pressure'])
     
-    balloon = Balloon(interpolated_data, args['init_longitude'], args['init_latitude'], args['start_pressure'])
+    balloon = Balloon(interpolated_data, args['start_lon'], args['start_lat'], args['start_pressure'])
     balloon.altitude = balloon.get_surface_level_at_coords()
     balloon.pressure = balloon.get_pressure_at_point(interpolated_data)
 
@@ -36,7 +36,7 @@ def main():
         balloon.w_speed = ascent_rate
         ## ASCENT ##
         while balloon.altitude < args['burst_altitude']:
-            if (args['time']+balloon.time_flying % 3600) == 0:
+            if ((args['time']+balloon.time_flying) % 3600) == 0:
                 hour+=1
                 geo_bounds = get_bounding_square(balloon.lat,balloon.lon)
                 current_file_path = next_file_path
@@ -55,12 +55,13 @@ def main():
                                                  hour)
             balloon.prepare_interpolators(interpolated_data)
             balloon.get_next_point(interpolated_data, 0)
-            print('YES')
+            print(hour, balloon.lat, balloon.lon, balloon.pressure, balloon.time_flying)
         
         ## DESCENT ##
+        print('DESSSSSSSSSSSSSSSCENT')
         surface = balloon.get_surface_level_at_coords()
         while balloon.altitude > surface:
-            if (args['time']+balloon.time_flying % 3600) == 0:
+            if ((args['time']+balloon.time_flying) % 3600) == 0:
                 hour+=1
                 geo_bounds = get_bounding_square(balloon.lat,balloon.lon)
                 current_file_path = next_file_path
@@ -79,10 +80,13 @@ def main():
                                                  hour)
             balloon.prepare_interpolators(interpolated_data)
             balloon.get_next_point(interpolated_data, 1)
-            balloon.get_surface_level_at_coords()
+            surface = balloon.get_surface_level_at_coords()
+            print(surface, balloon.altitude)
+
         trajectories.append(balloon.trajectory)
-        balloon.reset(args['init_longitude'], args['init_latitude'], args['start_pressure'])
-    plot_trajectory_3d(trajectories[0])            
+        balloon.reset(args['start_lon'], args['start_lat'], args['start_pressure'])
+    # plot_trajectory_3d(trajectories[0])          
+    print('PLOT')  
             
         
 
