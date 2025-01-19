@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "strato_prediction"
 version = "0.1.0"
-description = "Prédicition météo de la trajectoire d'un ballon sonde"
+description = "Prédicition de la trajectoire d'un ballon sonde via données météo"
 authors = ["Théo Welker <theo.welker@heig-vd.ch>"]
 readme = "README.md"
 

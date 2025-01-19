@@ -53,7 +53,7 @@ def args_retrieval():
         args['start_lon'] = 12
         args['start_pressure'] = 700
         args['ascent_rate'] = [5]
-        args['burst_altitude'] = 2000
+        args['burst_altitude'] = 1500
         args['date'] = "20250111"
         args['time'] = 32350
         

@@ -86,7 +86,8 @@ def main():
         trajectories.append(balloon.trajectory)
         balloon.reset(args['start_lon'], args['start_lat'], args['start_pressure'])
     # plot_trajectory_3d(trajectories[0])          
-    print('PLOT')  
+    print(trajectories[0]['latitudes'][-1], trajectories[0]['longitudes'][-1], trajectories[0]['altitudes'][-1])
+    # print(trajectories[0])
             
         
 

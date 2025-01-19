@@ -79,11 +79,11 @@ def load_grib_data(file_path_1, file_path_2):
 
     return current_pressure_dataset, next_pressure_dataset, surface_dataset
 
-def interpolate_data(current_pressure_dataset, next_pressure_dataset, surface_dataset, target_time, lat, lon, pressure, i=0):
+def interpolate_data(current_pressure_dataset, next_pressure_dataset, surface_dataset, target_time, lat, lon, pressure, hour=0):
     pressure_levels = current_pressure_dataset.isobaricInhPa.values
     target_index = (abs(pressure_levels - pressure)).argmin()  # Indice le plus proche
-    indices = slice(max(0, target_index - 2), min(len(pressure_levels), target_index + 3))
-
+    indices = slice(max(0, target_index - 2), min(len(pressure_levels), target_index + 2))
+    print(indices)
     current_pressure_subset = current_pressure_dataset.isel(isobaricInhPa=indices).sel(
         latitude = slice(lat - 0.5, lat + 0.5),
         longitude = slice(lon - 0.5, lon + 0.5)
@@ -98,44 +98,22 @@ def interpolate_data(current_pressure_dataset, next_pressure_dataset, surface_da
         longitude = slice(lon - 0.5, lon + 0.5)
     )
 
-    current_pressure_subset = current_pressure_subset.assign_coords(time =i*3600)
-    next_pressure_subset = next_pressure_subset.assign_coords(time =(i+1)*3600)
+    current_pressure_subset = current_pressure_subset.assign_coords(time =hour*3600)
+    next_pressure_subset = next_pressure_subset.assign_coords(time =(hour+1)*3600)
     
-    combined_pressure_dataset = xr.concat([current_pressure_subset,next_pressure_subset],dim = "time")
+    combined_pressure_subset = xr.concat([current_pressure_subset,next_pressure_subset], dim = "time")
 
     data = {
-        'pressure': combined_pressure_dataset.isobaricInhPa.values,
-        'latitude': combined_pressure_dataset.latitude.values,
-        'longitude': combined_pressure_dataset.longitude.values,
-        'gph': combined_pressure_dataset.gh.interp(time = target_time).values,
-        'u_wind': combined_pressure_dataset.u.interp(time = target_time).values,
-        'v_wind': combined_pressure_dataset.v.interp(time = target_time).values,
+        'pressure': combined_pressure_subset.isobaricInhPa.values,
+        'latitude': combined_pressure_subset.latitude.values,
+        'longitude': combined_pressure_subset.longitude.values,
+        'gph': combined_pressure_subset.gh.interp(time = target_time).values,
+        'u_wind': combined_pressure_subset.u.interp(time = target_time).values,
+        'v_wind': combined_pressure_subset.v.interp(time = target_time).values,
         'surface': surface_subset.orog.values,
-        'w_wind': combined_pressure_dataset.wz.interp(time = target_time).values,
-        'humidity': combined_pressure_dataset.r.interp(time = target_time).values,
-        'temp': combined_pressure_dataset.t.interp(time = target_time).values
+        'w_wind': combined_pressure_subset.wz.interp(time = target_time).values,
+        'humidity': combined_pressure_subset.r.interp(time = target_time).values,
+        'temp': combined_pressure_subset.t.interp(time = target_time).values
     }
     
     return data
-
-# def interpolate_data(data,time):
-#     print(f"time:{time}")
-#     #print(f"time:{data['u_wind']}")
-#     # print(f"time:{data['u_wind'].dims}")
-    
-#     interpolated_data = {
-#         'pressure': data['pressure'],
-#         'latitude': data['latitude'],
-#         'longitude': data['longitude'],
-#         'gph': xr.DataArray(data['gph']).interp(dim_0 = time).values,
-#         'u_wind': xr.DataArray(data['u_wind']).interp(dim_0 = time).values,
-#         'v_wind': xr.DataArray(data['v_wind']).interp(dim_0 = time).values,
-#         'surface': data['surface'],
-#         'w_wind': xr.DataArray(data['w_wind']).interp(dim_0 = time).values,
-#         'humidity': xr.DataArray(data['humidity']).interp(dim_0 = time).values,
-#         'temp': xr.DataArray(data['temp']).interp(dim_0 = time).values 
-#         }
-#     print(type(interpolated_data['u_wind']))
-#     print(type(xr.DataArray(data['u_wind'])))
-#     print(f"xxxx:{xr.DataArray(data['u_wind']).dim_0.values}")
-#     return interpolated_data
