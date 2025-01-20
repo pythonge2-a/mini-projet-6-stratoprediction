@@ -8,6 +8,7 @@ def get_bounding_square(lat,lon):
         'right_lon' : lon + d_max, 
         'left_lon' : lon - d_max,
     }
+    print(geo_bounds)
     return geo_bounds
 
 def calculate_air_density(pressure, temp, humidity):

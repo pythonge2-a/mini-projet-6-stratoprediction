@@ -82,8 +82,7 @@ def load_grib_data(file_path_1, file_path_2):
 def interpolate_data(current_pressure_dataset, next_pressure_dataset, surface_dataset, target_time, lat, lon, pressure, hour=0):
     pressure_levels = current_pressure_dataset.isobaricInhPa.values
     target_index = (abs(pressure_levels - pressure)).argmin()  # Indice le plus proche
-    indices = slice(max(0, target_index - 2), min(len(pressure_levels), target_index + 2))
-    print(indices)
+    indices = slice(max(0, target_index - 2), min(len(pressure_levels), target_index + 3))
     current_pressure_subset = current_pressure_dataset.isel(isobaricInhPa=indices).sel(
         latitude = slice(lat - 0.5, lat + 0.5),
         longitude = slice(lon - 0.5, lon + 0.5)
@@ -115,5 +114,6 @@ def interpolate_data(current_pressure_dataset, next_pressure_dataset, surface_da
         'humidity': combined_pressure_subset.r.interp(time = target_time).values,
         'temp': combined_pressure_subset.t.interp(time = target_time).values
     }
-    
+    print(data['latitude'])
+    print(data['longitude'])
     return data

@@ -26,9 +26,7 @@ def main():
                                          args['start_pressure'])
     
     balloon = Balloon(interpolated_data, args['start_lon'], args['start_lat'], args['start_pressure'])
-    balloon.altitude = balloon.get_surface_level_at_coords()
     balloon.pressure = balloon.get_pressure_at_point(interpolated_data)
-
     trajectories = []
     hour = 0
 
@@ -45,15 +43,16 @@ def main():
                                                          args['offset_time']+hour,
                                                          geo_bounds)
                 current_file_data, next_file_data, surface_data = load_grib_data(current_file_path, next_file_path)
-            interpolated_data = interpolate_data(current_file_data, 
-                                                 next_file_data, 
-                                                 surface_data,
-                                                 (args['time']%3600)+balloon.time_flying, 
-                                                 balloon.lat, 
-                                                 balloon.lon, 
-                                                 balloon.pressure, 
-                                                 hour)
-            balloon.prepare_interpolators(interpolated_data)
+            if balloon.time_flying % 60 == 0:
+                interpolated_data = interpolate_data(current_file_data, 
+                                                    next_file_data, 
+                                                    surface_data,
+                                                    (args['time']%3600)+balloon.time_flying, 
+                                                    balloon.lat, 
+                                                    balloon.lon, 
+                                                    balloon.pressure, 
+                                                    hour)
+                balloon.prepare_interpolators(interpolated_data)
             balloon.get_next_point(interpolated_data, 0)
             print(hour, balloon.lat, balloon.lon, balloon.pressure, balloon.time_flying)
         
@@ -70,24 +69,24 @@ def main():
                                                          args['offset_time']+hour,
                                                          geo_bounds)
                 current_file_data, next_file_data, surface_data = load_grib_data(current_file_path, next_file_path)
-            interpolated_data = interpolate_data(current_file_data, 
-                                                 next_file_data, 
-                                                 surface_data, 
-                                                 (args['time']%3600)+balloon.time_flying, 
-                                                 balloon.lat, 
-                                                 balloon.lon, 
-                                                 balloon.pressure, 
-                                                 hour)
-            balloon.prepare_interpolators(interpolated_data)
+            if balloon.time_flying % 60 == 0:
+                interpolated_data = interpolate_data(current_file_data, 
+                                                    next_file_data, 
+                                                    surface_data, 
+                                                    (args['time']%3600)+balloon.time_flying, 
+                                                    balloon.lat, 
+                                                    balloon.lon, 
+                                                    balloon.pressure, 
+                                                    hour)
+                balloon.prepare_interpolators(interpolated_data)
             balloon.get_next_point(interpolated_data, 1)
             surface = balloon.get_surface_level_at_coords()
-            print(surface, balloon.altitude)
 
         trajectories.append(balloon.trajectory)
         balloon.reset(args['start_lon'], args['start_lat'], args['start_pressure'])
-    # plot_trajectory_3d(trajectories[0])          
+    plot_trajectory_3d(trajectories[0])          
     print(trajectories[0]['latitudes'][-1], trajectories[0]['longitudes'][-1], trajectories[0]['altitudes'][-1])
-    # print(trajectories[0])
+    print(trajectories[0]['altitudes'][0])
             
         
 
