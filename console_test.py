@@ -4,6 +4,8 @@ from strato_prediction.display import plot_trajectory_3d, show_on_map
 from prompt_toolkit import PromptSession
 from prompt_toolkit.shortcuts import message_dialog, button_dialog, input_dialog, radiolist_dialog
 from datetime import datetime, timedelta
+import math
+
 
 
 def  is_valid_datetime_within_range(launch_date_str, current_datetime):
@@ -109,6 +111,19 @@ while True:
             text="Mauvais input. Entrez la masse au format float.",
             ).run()
 
+
+        diametre_str = input_dialog(
+        title="Diamètre du ballon",
+        text="Entrez le diamètre en mètre au format float.",
+        ).run()
+        print(f"'{diametre_str}'")
+        while(not is_float(diametre_str)) :
+            print(f"'{diametre_str}'")
+            diametre_str = input_dialog(
+            title="Diamètre du ballon",
+            text="Mauvais input. Entrez le diamètre au format float.",
+            ).run() 
+
         launch_time_str = input_dialog(
             title="Heure de départ",
             text="Entrez l'heure de départ (YYYY-MM-DD HH:MM:SS, max. dans 10 jours) :",
@@ -125,8 +140,29 @@ while True:
         pressure_start = float(pressure_str)
         drag_coefficient = float(drag_coefficient)
         masse = float(masse_str)
+        diametre_str = float(diametre_str)
 
+        surface_area = math.pi*(diametre_str/2)**2
 
+        hour = current_datetime.hour
+        if 0 <= hour < 6:
+            cycle = "00"
+        elif 6 <= hour < 12:
+            cycle = "06"
+        elif 12 <= hour < 18:
+            cycle = "12"
+        elif 18 <= hour < 24:
+            cycle = "18"
+
+        cycle_int = int(cycle)  # Conversion temporaire en entier pour le calcul
+
+        # Conversion de la chaîne en datetime pour les calculs
+        launch_time = datetime.strptime(launch_time_str, "%Y-%m-%d %H:%M:%S")
+
+        delta = launch_time - current_datetime
+        heures_ecoulees = delta.total_seconds() // 3600  # Division entière pour obtenir un résultat entier 
+
+        time_launch = heures_ecoulees - cycle_int
 
         message_dialog(
             title="Résumé de la simulation",
@@ -135,12 +171,15 @@ while True:
                 f"Longitude : {lon_start},\n"
                 f"Latitude : {lat_start},\n"
                 f"Pression : {pressure_start},\n"
-                f"Coefficient de traînée : {masse},\n"
-                f"Masse : {drag_coefficient},\n"
+                f"Coefficient de traînée : {drag_coefficient},\n"
+                f"Masse : {masse}g,\n"
                 f"Heure de départ : {launch_time_str},\n"
-            
+                f"Diamètre du ballon : {diametre_str}m,\n"
+                f"cycle : {cycle},\n"
+                f"temps de lancement: {time_launch},\n"
             )
         ).run()
+        break
     else:
         break
 
