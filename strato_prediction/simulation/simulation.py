@@ -4,7 +4,7 @@ from scipy.interpolate import RegularGridInterpolator, interp1d
 from .utils import calculate_air_density
 
 class Balloon:
-    def __init__(self, data, start_lon, start_lat, start_pressure, w_speed=5, time_step=1., mass=1.14, parachute_surface=1.13, drag_coeff=1.5):
+    def __init__(self, data, start_lon, start_lat, start_pressure, w_speed=4.96, time_step=1., mass=3.1, parachute_surface=2.01, drag_coeff=1.3):
         self.lon = start_lon
         self.lat = start_lat
         self.pressure = start_pressure
@@ -33,11 +33,19 @@ class Balloon:
         self.parachute_surface = parachute_surface
         self.descent_time = 0
 
-    def reset(self, start_lon, start_lat, start_pressure):
+    def reset(self, data, start_lon, start_lat, start_pressure):
         self.lon = start_lon
         self.lat = start_lat
         self.pressure = start_pressure
         self.time_flying = 0
+        self.u_interpolator = None
+        self.v_interpolator = None
+        self.w_interpolator = None
+        self.gph_interpolator = None
+        self.surface_interpolator = None
+        self.humidity_interpolator = None
+        self.temp_interpolator = None
+        self.prepare_interpolators(data)
         self.altitude = self.get_surface_level_at_coords()
         self.trajectory = {
             'longitudes' : [self.lon,],
@@ -141,7 +149,6 @@ class Balloon:
         # Temps et vitesse en fonction du temps
         self.descent_time += self.time_step
         self.w_speed = - v_t * np.tanh((self.gravity / v_t) * self.descent_time)
-        print(self.w_speed)
         
     def get_next_point(self, data, down=0):
         geod = Geod(ellps="WGS84")

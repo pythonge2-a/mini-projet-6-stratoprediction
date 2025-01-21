@@ -3,7 +3,7 @@ from strato_prediction.CLI import args_retrieval
 from strato_prediction.GRIB import download_grib_file, load_grib_data, download_next_grib_file, interpolate_data
 from strato_prediction.simulation import Balloon, get_bounding_square
 from scipy.interpolate import interp1d
-from strato_prediction.display import plot_trajectory_3d
+from strato_prediction.display import plot_trajectories_3d
 
 import numpy as np
 #Permet de pouvoir afficher un nb illimité de ligne dans la console
@@ -12,10 +12,11 @@ np.set_printoptions(threshold=np.inf)
 def main():
     args = args_retrieval()
     geo_bounds = get_bounding_square(args['start_lat'], args['start_lon'])
-    current_file_path,next_file_path = download_grib_file(args['date'],
+    current_file_path, next_file_path = download_grib_file(args['date'],
                                                           args['cycle'],
                                                           args['offset_time'],
                                                           geo_bounds)
+    reset_c_f_p, reset_n_f_p = current_file_path, next_file_path
     current_file_data, next_file_data, surface_data = load_grib_data(current_file_path, next_file_path)
     interpolated_data = interpolate_data(current_file_data, 
                                          next_file_data, 
@@ -33,6 +34,7 @@ def main():
     for ascent_rate in args['ascent_rate']:
         balloon.w_speed = ascent_rate
         ## ASCENT ##
+        print('ASSSSSSSSCENT')
         while balloon.altitude < args['burst_altitude']:
             if ((args['time']+balloon.time_flying) % 3600) == 0:
                 hour+=1
@@ -54,7 +56,6 @@ def main():
                                                     hour)
                 balloon.prepare_interpolators(interpolated_data)
             balloon.get_next_point(interpolated_data, 0)
-            print(hour, balloon.lat, balloon.lon, balloon.pressure, balloon.time_flying)
         
         ## DESCENT ##
         print('DESSSSSSSSSSSSSSSCENT')
@@ -83,12 +84,22 @@ def main():
             surface = balloon.get_surface_level_at_coords()
 
         trajectories.append(balloon.trajectory)
-        balloon.reset(args['start_lon'], args['start_lat'], args['start_pressure'])
-    plot_trajectory_3d(trajectories[0])          
-    print(trajectories[0]['latitudes'][-1], trajectories[0]['longitudes'][-1], trajectories[0]['altitudes'][-1])
-    print(trajectories[0]['altitudes'][0])
-            
         
+        current_file_path, next_file_path = reset_c_f_p, reset_n_f_p
+        current_file_data, next_file_data, surface_data = load_grib_data(current_file_path, next_file_path)
+        print('HEYOOOOOOOO')
+        interpolated_data = interpolate_data(current_file_data, 
+                                         next_file_data, 
+                                         surface_data,
+                                         args['time']%3600, 
+                                         args['start_lat'], 
+                                         args['start_lon'], 
+                                         args['start_pressure'])
+        balloon.reset(interpolated_data, args['start_lon'], args['start_lat'], args['start_pressure'])
+        balloon.pressure = balloon.get_pressure_at_point(interpolated_data)
+        hour = 0
+    plot_trajectories_3d(trajectories, args['ascent_rate'])          
+
 
 if __name__ == "__main__":
     main()

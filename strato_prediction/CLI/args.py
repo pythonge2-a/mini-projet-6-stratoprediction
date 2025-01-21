@@ -52,13 +52,13 @@ def args_retrieval():
         args['start_lat'] = 46.8127
         args['start_lon'] = 6.945
         args['start_pressure'] = 700
-        args['ascent_rate'] = [5]
+        args['ascent_rate'] = [4.5,5]
         args['burst_altitude'] = 37000
         args['date'] = "20250119"
         args['time'] = 82883
         
-        args['cycle'] = "12"
-        args['offset_time']= 20
+        args['cycle'] = "18"
+        args['offset_time']= 5
         
     
     return args
