@@ -44,21 +44,28 @@
 Fonctions supplémentaires en cas de temps à disposition: 
 -Système en pyhton pour télécharger automatiquement les fichiers Grib
 -Interpolation en 4D avec la gestion du temps inter-fichier
-## Installation
 
+
+## Installation
+Cloner le projet
 ```bash
-poetry install
-...
+git clone https://github.com/pythonge2-a/mini-projet-6-stratoprediction.git
+```
+Se diriger dans le répertoire
+```bash
+cd mini-projet-6-stratoprediction/
+```
+Installer les dépendances
+```bash
+poetry install 
 ```
 
-## (Pour les étudiants, à supprimer une fois fait)
-
-### Comment créer le module
-
-1. Créer un nouveau répertoire avec le nom du module
-2. Créer un fichier `__init__.py` vide
-3. Créer un fichier `__main__.py` vide
-4. Mettre à jour le fichier `README.md`
-5. Créer un projet Poetry avec `poetry new`
-6. Ajouter les fichiers à Git
-7. Commit et push
+## Utiliser le projet
+Créer un environnement virtuel
+```bash
+poetry shell 
+```
+Lancer le programme
+```bash
+poetry run strato_prediction/ #Et là, on se laisse porter
+```
