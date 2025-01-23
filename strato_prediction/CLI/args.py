@@ -331,7 +331,7 @@ def input_launch_date():
                         elif position == 5:
                             valid_input = char in ['0']
                         elif position == 6:
-                            valid_input = char in ['0', '1']
+                            valid_input = char in ['0', '1','2']
                         else:
                             valid_input = char.isdigit()
                             
