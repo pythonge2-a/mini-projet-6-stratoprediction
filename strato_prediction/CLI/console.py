@@ -138,10 +138,10 @@ def console():
             'start_lon': 0,
             'ascent_rate':0,
             'burst_altitude':0,
-            'date': 00000000,
-            'time':000000,
-            'cycle': 00,
-            'offset_time': 00,
+            'date': "",
+            'time':"",
+            'cycle': "",
+            'offset_time': 0,
             'diameter_str': 0,
             'surface_area':0,
             'drag_coefficient':0,
@@ -163,7 +163,7 @@ def console():
         lat_str = input_dialog(
         title="Coordonnées initiales",
         text="Mauvais input. Entrez la latitude de lancementau format float. ([-90,90][°])").run()
-    args['start_lat'] = lat_str
+    args['start_lat'] = float(lat_str)
     
     lon_str = input_dialog(
         title="Coordonnées initiales",
@@ -172,9 +172,9 @@ def console():
         lon_str = input_dialog(
             title="Coordonnées initiales",
             text="Mauvais input. Entrez la longitude de lancement au format float. ([0,360][°])").run()
-    args['start_lon'] = lon_str
+    args['start_lon'] = float(lon_str)
     
-    args['date'] = get_date_input()
+    date_str = get_date_input()
     args['time'] = get_time_input()
     
     drag_coefficient = input_dialog(
@@ -184,7 +184,7 @@ def console():
         drag_coefficient = input_dialog(
             title="Coordonnées initiales",
             text="Mauvais input. Entrez le coefficient de traînée au format float.(]0,5] [-])").run()
-    args['drag_coefficient'] = drag_coefficient
+    args['drag_coefficient'] = float(drag_coefficient)
     
     masse_str = input_dialog(
         title="Masse",
@@ -193,7 +193,7 @@ def console():
         masse_str = input_dialog(
             title="Masse",
             text="Mauvais input. Entrez la masse au format float.(]0,100000] [g])").run()
-    args['masse_str'] = masse_str
+    args['masse_str'] = float(masse_str)
         
     diametre_str = input_dialog(
         title="Diamètre du ballon",
@@ -202,21 +202,21 @@ def console():
         diametre_str = input_dialog(
             title="Diamètre du ballon",
             text="Mauvais input. Entrez le diamètre au format float.(]0,100] [m])").run()
-    args['diametre_str'] = diametre_str
+    args['diametre_str'] = float(diametre_str)
     
     if simulation == "sim1":    
         burst_altitude = input_dialog(
             title="Altitude d'explosion",
             text="Entrez l'altitude d'explosion. ([0,40000][m])").run()
         while(not is_float(burst_altitude)or not (0 <= float(burst_altitude) <= 40000)) :
-            if burst_altitude < 10000:
+            if float(burst_altitude) < 10000:
                 text = "Mauvais input. L'altitude d'explosion doit être > 10000m."
             else:
                 text="Mauvais input. Entrez l'altitude d'explosion au format float. ([0,40000][m])"
             burst_altitude = input_dialog(
                 title="Altitude d'explosion",
                 text = text).run()
-        args['burst_altitude'] = burst_altitude
+        args['burst_altitude'] = float(burst_altitude)
     
         ascent_rate = input_dialog(
             title="Vitesses d'ascension",
@@ -229,7 +229,7 @@ def console():
             ascent_rate = input_dialog(
                 title="Vitesses d'ascension",
                 text = text).run()
-        args['ascent_rate'] = ascent_rate
+        args['ascent_rate'] = float(ascent_rate)
 
     elif simulation == "sim2":
         ascent_rate = input_dialog(
@@ -243,7 +243,7 @@ def console():
             ascent_rate = input_dialog(
                 title="Vitesses d'ascension",
                 text = text).run()
-        args['ascent_rate'] = ascent_rate
+        args['ascent_rate'] = float(ascent_rate)
         message_dialog(
             title="Altitudes d'explosions",
             text="Les altitudes d'explosion sont 25,26,27,...,35 [km]").run()
@@ -261,7 +261,7 @@ def console():
             burst_altitude = input_dialog(
                 title="Altitude d'explosion",
                 text = text).run()
-        args['burst_altitude'] = burst_altitude
+        args['burst_altitude'] = float(burst_altitude)
         message_dialog(
             title="Vitesses d'ascension",
             text="Les vitesses d'ascension sont 4,4.5,5,5.5,6 [m/s]").run()
@@ -272,25 +272,29 @@ def console():
     # Obtenir l'heure actuelle
     now = datetime.now()
     hour = now.hour
+    now_str = "20250123"#now.strftime("%Y%m%d")
+    args['date'] = now_str
 
+    cycle = ""
     # Déterminer la tranche horaire pour ajuster le cycle
     if 0 <= hour < 6:
         cycle = "00"
     elif 6 <= hour < 12:
         cycle = "06"
-    elif 12 <= hour < 18:
+    elif 12 <= hour < 16:
         cycle = "12"
-    elif 18 <= hour < 24:
+    elif 16 <= hour < 18:
         cycle = "18"
 
+
     # Conversion du cycle en entier
-    args['cycle'] = int(cycle)
+    args['cycle'] = cycle
 
     # Convertir l'heure de lancement future en datetime.time()
     launch_time = datetime.strptime(args['time'], "%H:%M:%S").time()
 
     # Convertir la chaîne de date du lancement en objet datetime.date()
-    launch_date = datetime.strptime(args['date'], "%Y-%m-%d").date()
+    launch_date = datetime.strptime(date_str, "%Y-%m-%d").date()
 
     # Vérifier si la date de lancement est aujourd'hui ou dans le futur
     if launch_date > now.date() or (launch_date == now.date() and launch_time > now.time()):
@@ -307,7 +311,7 @@ def console():
     hours_diff = time_diff.total_seconds() // 3600  # Total des secondes divisé par 3600 pour obtenir des heures
 
     # Soustraire le cycle au résultat
-    adjusted_time = hours_diff - args['cycle']
+    adjusted_time = hours_diff - int(cycle)
 
     # Enregistrer le résultat dans args
     args['offset_time'] = adjusted_time
@@ -330,4 +334,3 @@ def console():
             f"Offset: {args['offset_time']},\n"
         )).run()
     return args
-console()

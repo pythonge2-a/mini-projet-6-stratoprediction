@@ -49,16 +49,16 @@ def args_retrieval():
                 pass
     elif validation in ["NO","N"]:
         print("Coordonnées initiales") 
-        args['start_lat'] = 46.8127
-        args['start_lon'] = 6.945
+        args['start_lat'] = 46.779323
+        args['start_lon'] = 6.659538
         args['start_pressure'] = 700
         args['ascent_rate'] = [4.5,5]
-        args['burst_altitude'] = 37000
-        args['date'] = "20250119"
+        args['burst_altitude'] = [30000, 34000]
+        args['date'] = "20250123"
         args['time'] = 82883
         
         args['cycle'] = "18"
-        args['offset_time']= 5
+        args['offset_time']= 110
         
     
     return args

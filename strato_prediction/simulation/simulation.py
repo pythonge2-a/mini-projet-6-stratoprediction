@@ -114,7 +114,7 @@ class Balloon:
     def prepare_pressure_interpolator(self, data):
         points = np.array([data['pressure'], np.full_like(data['pressure'], self.lat), np.full_like(data['pressure'], self.lon)]).T
         gph_at_coords = self.gph_interpolator(points)
-        pressure_interpolator = interp1d(gph_at_coords, data['pressure'], kind='linear', fill_value='extrapolate')############# EXTRAPOLATE??????
+        pressure_interpolator = interp1d(gph_at_coords, data['pressure'], kind='linear', fill_value='extrapolate')
         return pressure_interpolator
 
     def get_wind_at_point(self):
@@ -175,6 +175,7 @@ class Balloon:
         self.altitude = altitude_new
         pressure_new = self.get_pressure_at_point(data)
 
+        # Mise à jour du temps de vol
         time_new = self.time_flying + self.time_step
 
         # Mise à jour des données du ballon

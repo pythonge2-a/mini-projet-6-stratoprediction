@@ -114,6 +114,4 @@ def interpolate_data(current_pressure_dataset, next_pressure_dataset, surface_da
         'humidity': combined_pressure_subset.r.interp(time = target_time).values,
         'temp': combined_pressure_subset.t.interp(time = target_time).values
     }
-    print(data['latitude'])
-    print(data['longitude'])
     return data
