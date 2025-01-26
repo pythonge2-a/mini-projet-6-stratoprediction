@@ -1,6 +1,3 @@
-from strato_prediction.simulation import Balloon
-from strato_prediction.GRIB import load_grib_data
-from strato_prediction.display import plot_trajectory_3d, show_on_map
 from prompt_toolkit import PromptSession
 from prompt_toolkit.shortcuts import message_dialog, button_dialog, input_dialog, radiolist_dialog
 from datetime import datetime, timedelta
@@ -44,10 +41,10 @@ def validate_date_range(date_str):
         # Obtenir la date actuelle (sans l'heure ni les microsecondes)
         now = datetime.now().date()
         
-        # Calculer la limite supérieure (date actuelle + 10 jours max)
-        max_date = now + timedelta(days=10)  # Calcul effectué avec un objet `date`, ce qui est correct
+        # Calculer la limite supérieure (date actuelle + 4 jours max)
+        max_date = now + timedelta(days=4)  # Calcul effectué avec un objet `date`, ce qui est correct
         
-        # Vérifier que la date est dans l'intervalle [now, now + 10 jours]
+        # Vérifier que la date est dans l'intervalle [now, now + 4 jours]
         if not (now <= date_input <= max_date):
             return f"La date doit être comprise entre {now.strftime('%Y-%m-%d')} et {max_date.strftime('%Y-%m-%d')}."
         
@@ -67,14 +64,14 @@ def validate_time_range(time_str):
         now = datetime.now()
         now_time = now.time()
        
-        # Calculer la limite supérieure (10 jours après maintenant)
-        max_datetime = now + timedelta(days=10)
+        # Calculer la limite supérieure (4 jours après maintenant)
+        max_datetime = now + timedelta(days=4)
         max_time = max_datetime.time()
        
         # Comparer uniquement si l'heure saisie est pour aujourd'hui
         if now.date() == max_datetime.date():
             if not (now_time <= time_input <= max_time):
-                return f"L'heure doit être entre {now_time.strftime('%H:%M:%S')} aujourd'hui et {max_time.strftime('%H:%M:%S')} dans 10 jours."
+                return f"L'heure doit être entre {now_time.strftime('%H:%M:%S')} aujourd'hui et {max_time.strftime('%H:%M:%S')} dans 4 jours."
        
         # Si la plage de validation doit inclure les jours complets
         if not (time_input >= now_time or time_input <= max_time):
@@ -136,8 +133,8 @@ def console():
     args = {
             'start_lat': 0,
             'start_lon': 0,
-            'ascent_rate':0,
-            'burst_altitude':0,
+            'ascent_rate':[],
+            'burst_altitude':[],
             'date': "",
             'time':"",
             'cycle': "",
@@ -145,7 +142,8 @@ def console():
             'diameter_str': 0,
             'surface_area':0,
             'drag_coefficient':0,
-            'masse_str':0
+            'masse_str':0,
+            'time_m':0
         }
     
     simulation = radiolist_dialog(
@@ -216,7 +214,7 @@ def console():
             burst_altitude = input_dialog(
                 title="Altitude d'explosion",
                 text = text).run()
-        args['burst_altitude'] = float(burst_altitude)
+        args['burst_altitude'] = [float(burst_altitude)]
     
         ascent_rate = input_dialog(
             title="Vitesses d'ascension",
@@ -229,7 +227,7 @@ def console():
             ascent_rate = input_dialog(
                 title="Vitesses d'ascension",
                 text = text).run()
-        args['ascent_rate'] = float(ascent_rate)
+        args['ascent_rate'] = [float(ascent_rate)]
 
     elif simulation == "sim2":
         ascent_rate = input_dialog(
@@ -243,7 +241,7 @@ def console():
             ascent_rate = input_dialog(
                 title="Vitesses d'ascension",
                 text = text).run()
-        args['ascent_rate'] = float(ascent_rate)
+        args['ascent_rate'] = [float(ascent_rate)]
         message_dialog(
             title="Altitudes d'explosions",
             text="Les altitudes d'explosion sont 25,26,27,...,35 [km]").run()
@@ -261,7 +259,7 @@ def console():
             burst_altitude = input_dialog(
                 title="Altitude d'explosion",
                 text = text).run()
-        args['burst_altitude'] = float(burst_altitude)
+        args['burst_altitude'] = [float(burst_altitude)]
         message_dialog(
             title="Vitesses d'ascension",
             text="Les vitesses d'ascension sont 4,4.5,5,5.5,6 [m/s]").run()
@@ -271,20 +269,27 @@ def console():
 
     # Obtenir l'heure actuelle
     now = datetime.now()
-    hour = now.hour
-    now_str = "20250123"#now.strftime("%Y%m%d")
-    args['date'] = now_str
+    yesterday = now - timedelta(days=1)
+    now_str = now.strftime("%Y%m%d")
+    yesterday_str = yesterday.strftime("%Y%m%d")
 
+    args['date'] = now_str
+    seconds_since_midnight = now.hour * 3600 + now.minute * 60 + now.second
+    # Stocker l'heure actuelle en secondes dans args
+    args['time_m'] = int(seconds_since_midnight)
+    
+    hour = now.hour
     cycle = ""
     # Déterminer la tranche horaire pour ajuster le cycle
     if 0 <= hour < 6:
-        cycle = "00"
-    elif 6 <= hour < 12:
-        cycle = "06"
-    elif 12 <= hour < 16:
-        cycle = "12"
-    elif 16 <= hour < 18:
         cycle = "18"
+        args['date'] = yesterday_str
+    elif 6 <= hour < 12:
+        cycle = "00"
+    elif 12 <= hour < 16:
+        cycle = "06"
+    elif 16 <= hour < 18:
+        cycle = "12"
 
 
     # Conversion du cycle en entier
@@ -295,14 +300,8 @@ def console():
 
     # Convertir la chaîne de date du lancement en objet datetime.date()
     launch_date = datetime.strptime(date_str, "%Y-%m-%d").date()
-
-    # Vérifier si la date de lancement est aujourd'hui ou dans le futur
-    if launch_date > now.date() or (launch_date == now.date() and launch_time > now.time()):
-        # Si la date du lancement est dans le futur, combiner avec l'heure de lancement pour obtenir datetime
-        future_datetime = datetime.combine(launch_date, launch_time)
-    else:
-        # Si l'heure de lancement est dans le passé pour aujourd'hui, passer au jour suivant
-        future_datetime = datetime.combine(now.date() + timedelta(days=1), launch_time)
+    
+    future_datetime = datetime.combine(launch_date, launch_time)
 
     # Calculer la différence de temps entre l'heure actuelle et l'heure future
     time_diff = future_datetime - now
@@ -314,7 +313,7 @@ def console():
     adjusted_time = hours_diff - int(cycle)
 
     # Enregistrer le résultat dans args
-    args['offset_time'] = adjusted_time
+    args['offset_time'] = int(adjusted_time) + 6
 
     print(f"Offset time : {args['offset_time']} heures")
 
@@ -333,4 +332,10 @@ def console():
             f"Cycle : {args['cycle']},\n"
             f"Offset: {args['offset_time']},\n"
         )).run()
+    
+    for key, value in args.items():
+        print(f"Clé : {key}")
+        print(f"Valeur : {value}")
+        print(f"Type : {type(value).__name__}")
+        print("-" * 30)
     return args

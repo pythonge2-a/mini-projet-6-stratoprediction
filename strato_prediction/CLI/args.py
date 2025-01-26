@@ -54,10 +54,10 @@ def args_retrieval():
         args['start_pressure'] = 700
         args['ascent_rate'] = [4.5,5]
         args['burst_altitude'] = [30000, 34000]
-        args['date'] = "20250123"
-        args['time'] = 82883
+        args['date'] = "20250124"
+        args['time_m'] = 82883
         
-        args['cycle'] = "18"
+        args['cycle'] = "00"
         args['offset_time']= 110
         
     

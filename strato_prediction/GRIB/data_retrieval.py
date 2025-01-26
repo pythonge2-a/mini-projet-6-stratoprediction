@@ -23,10 +23,14 @@ def download_grib_file(date, cycle, offset_time, geo_bounds):
     region_url = f"subregion=&toplat={geo_bounds['top_lat']}&leftlon={geo_bounds['left_lon']}&rightlon={geo_bounds['right_lon']}&bottomlat={geo_bounds['btm_lat']}"
 
     current_url = base_url + filter_url + current_time_url + weather_vars_url + region_url
+    print(current_url)
     next_url = base_url + filter_url + next_time_url + weather_vars_url + region_url
+    print(next_url)
     current_r = requests.get(current_url)
     # current_r = requests.get(url_test)
     next_r = requests.get(next_url)
+
+    print(f"Date: {date}, Cycle: {cycle}, Geo Bounds: {geo_bounds}")
 
     if current_r.status_code == 200:
         current_file_path = os.path.join("assets", f"d{date}c{cycle}o{str(offset_time).zfill(3)}bl{geo_bounds['btm_lat']}tl{geo_bounds['top_lat']}ll{geo_bounds['left_lon']}rl{geo_bounds['right_lon']}")
@@ -81,17 +85,20 @@ def load_grib_data(file_path_1, file_path_2):
 
 def interpolate_data(current_pressure_dataset, next_pressure_dataset, surface_dataset, target_time, lat, lon, pressure, hour=0):
     pressure_levels = current_pressure_dataset.isobaricInhPa.values
-    target_index = (abs(pressure_levels - pressure)).argmin()  # Indice le plus proche
-    indices = slice(max(0, target_index - 2), min(len(pressure_levels), target_index + 3))
-    current_pressure_subset = current_pressure_dataset.isel(isobaricInhPa=indices).sel(
+    # target_index = (abs(pressure_levels - pressure)).argmin()  # Indice le plus proche
+    # indices = slice(max(0, target_index - 2), min(len(pressure_levels), target_index + 3))
+    current_pressure_subset = current_pressure_dataset.sel(
         latitude = slice(lat - 0.5, lat + 0.5),
         longitude = slice(lon - 0.5, lon + 0.5)
     )
-    next_pressure_subset = next_pressure_dataset.isel(isobaricInhPa=indices).sel(
+    next_pressure_subset = next_pressure_dataset.sel(
         latitude = slice(lat - 0.5, lat + 0.5),
         longitude = slice(lon - 0.5, lon + 0.5)
     )
-
+    # next_pressure_subset = next_pressure_dataset.isel(isobaricInhPa=indices).sel(
+    #     latitude = slice(lat - 0.5, lat + 0.5),
+    #     longitude = slice(lon - 0.5, lon + 0.5)
+    # )
     surface_subset = surface_dataset.sel(
         latitude = slice(lat - 0.5, lat + 0.5),
         longitude = slice(lon - 0.5, lon + 0.5)

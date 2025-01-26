@@ -5,26 +5,33 @@ from folium.plugins import AntPath, MiniMap, MeasureControl, MousePosition,Marke
 import http.server
 import socketserver
 
-def plot_trajectory_2d(trajectory): 
-    plt.figure(figsize=(10, 6))
-    plt.plot(trajectory['times'], trajectory['altitudes'], label="Altitude", color="b")
+def plot_trajectories_2d(trajectories, speeds, burst_altitudes):
+    plt.figure(figsize=(12, 8))
+    colors = ["blue", "red", "green", "yellow", "purple", "orange", "cyan", "magenta"]
+    color_count = len(colors)
+    
+    num_altitudes = len(burst_altitudes)
+    num_speeds = len(speeds)
+    
+    for alt_idx in range(num_altitudes):
+        for speed_idx in range(num_speeds):
+            traj_idx = alt_idx * num_speeds + speed_idx
+            trajectory = trajectories[traj_idx]
+            color = colors[traj_idx % color_count]
+            label = f'Vitesse = {speeds[speed_idx]} m/s, Alt. Explosion = {burst_altitudes[alt_idx]} m'
+            plt.plot(
+                trajectory['times'], 
+                trajectory['altitudes'], 
+                label=label, 
+                color=color)
+    
     plt.xlabel("Temps (s)")
     plt.ylabel("Altitude (m)")
-    plt.title("Évolution de l'altitude en fonction du temps")
+    plt.title("Évolution des altitudes en fonction du temps")
     plt.grid(True)
     plt.legend()
     plt.show()
 
-def plot_trajectory_3d(trajectory):
-    # Tracer la trajectoire en 3D
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.plot(trajectory['latitudes'], trajectory['longitudes'], trajectory['altitudes'], label='Trajectoire', color='b')
-    ax.set_xlabel('Latitude')
-    ax.set_ylabel('Longitude')
-    ax.set_zlabel('Hauteur (m)')
-    ax.set_title('Trajectoire du ballon YIPEEE')
-    plt.show()
 
 def plot_trajectories_3d(trajectories, speeds, burst_altitudes):
     fig = plt.figure()
