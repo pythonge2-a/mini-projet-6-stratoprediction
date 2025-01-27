@@ -6,7 +6,10 @@ import http.server
 import socketserver
 
 def plot_trajectories_2d(trajectories, speeds, burst_altitudes):
-    plt.figure(figsize=(12, 8))
+    """
+    Trace les trajectoires 2D des altitudes en fonction du temps pour différentes vitesses initiales et altitudes d'explosion.
+    """
+    plt.figure(num = '2D_Trajectories',figsize=(12, 8))
     colors = ["blue", "red", "green", "yellow", "purple", "orange", "cyan", "magenta"]
     color_count = len(colors)
     
@@ -34,7 +37,10 @@ def plot_trajectories_2d(trajectories, speeds, burst_altitudes):
 
 
 def plot_trajectories_3d(trajectories, speeds, burst_altitudes):
-    fig = plt.figure()
+    """
+    Trace les trajectoires 3D des altitudes en fonction des couples (latitude, longitude) pour différentes vitesses initiales et altitudes d'explosion.
+    """
+    fig = plt.figure(num = '3D_Trajectories',figsize=(12, 8))
     ax = fig.add_subplot(111, projection='3d')
     colors = ["blue", "red", "green", "yellow", "purple", "orange", "cyan", "magenta"]
     color_count = len(colors)
@@ -64,6 +70,10 @@ def plot_trajectories_3d(trajectories, speeds, burst_altitudes):
     plt.show()
 
 def show_on_map(trajectories, speeds, burst_altitudes, init_lat, init_lon):
+    """
+    Trace les trajectoires 2D des altitudes en fonction des couples (latitude, longitude) pour différentes vitesses initiales et altitudes d'explosion sur
+    une map interactive.
+    """
     colors = ["blue", "red", "green", "yellow", "purple", "orange", "cyan", "magenta"]
     color_count = len(colors)
     carte = fm.Map(location=[init_lat, init_lon], zoom_start=10)
