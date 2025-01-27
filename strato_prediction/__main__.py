@@ -10,7 +10,7 @@ import numpy as np
 np.set_printoptions(threshold=np.inf)
 
 def main():
-    args = console()
+    args = args_retrieval()
 
     geo_bounds = get_bounding_square(args['start_lat'], args['start_lon'])
     current_file_path, next_file_path = download_grib_file(args['date'],
@@ -63,6 +63,7 @@ def main():
             ## DESCENT ##
             print('DESSSSSSSSSSSSSSSCENT')
             surface = balloon.get_surface_level_at_coords()
+            balloon.prepare_air_density_interpolators(interpolated_data)
             while balloon.altitude > surface:
                 if ((args['time_m']+balloon.time_flying) % 3600) == 0:
                     hour+=1
@@ -83,6 +84,7 @@ def main():
                                                         balloon.pressure, 
                                                         hour)
                     balloon.prepare_interpolators(interpolated_data)
+                    balloon.prepare_air_density_interpolators(interpolated_data)
                 balloon.get_next_point(interpolated_data, 1)
                 surface = balloon.get_surface_level_at_coords()
 

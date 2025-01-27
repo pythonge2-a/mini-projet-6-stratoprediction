@@ -3,10 +3,10 @@ import numpy as np
 def get_bounding_square(lat,lon):
     d_max = 3
     geo_bounds = {
-        'top_lat': lat + d_max,
-        'btm_lat' :lat - d_max,
-        'right_lon' : lon + d_max, 
-        'left_lon' : lon - d_max,
+        'top_lat': round(lat,1) + d_max,
+        'btm_lat' :round(lat,1) - d_max,
+        'right_lon' : round(lon,1) + d_max, 
+        'left_lon' : round(lon,1) - d_max,
     }
     print(geo_bounds)
     return geo_bounds

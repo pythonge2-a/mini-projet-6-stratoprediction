@@ -19,28 +19,34 @@ def download_grib_file(date, cycle, offset_time, geo_bounds):
     filter_url = "filter_gfs_0p25_1hr.pl?dir=%2Fgfs."
     current_time_url = f"{date}%2F{cycle}%2Fatmos&file=gfs.t{cycle}z.pgrb2.0p25.f{str(offset_time).zfill(3)}&"
     next_time_url= f"{date}%2F{cycle}%2Fatmos&file=gfs.t{cycle}z.pgrb2.0p25.f{str(offset_time+1).zfill(3)}&"
+    
     weather_vars_url = "var_DZDT=on&var_HGT=on&var_RH=on&var_TMP=on&var_UGRD=on&var_VGRD=on&lev_1000_mb=on&lev_975_mb=on&lev_950_mb=on&lev_925_mb=on&lev_900_mb=on&lev_850_mb=on&lev_800_mb=on&lev_750_mb=on&lev_700_mb=on&lev_650_mb=on&lev_600_mb=on&lev_550_mb=on&lev_500_mb=on&lev_450_mb=on&lev_400_mb=on&lev_350_mb=on&lev_300_mb=on&lev_250_mb=on&lev_200_mb=on&lev_150_mb=on&lev_100_mb=on&lev_70_mb=on&lev_50_mb=on&lev_40_mb=on&lev_30_mb=on&lev_20_mb=on&lev_15_mb=on&lev_10_mb=on&lev_7_mb=on&lev_5_mb=on&lev_3_mb=on&lev_2_mb=on&lev_1_mb=on&lev_surface=on&"
+
     region_url = f"subregion=&toplat={geo_bounds['top_lat']}&leftlon={geo_bounds['left_lon']}&rightlon={geo_bounds['right_lon']}&bottomlat={geo_bounds['btm_lat']}"
 
     current_url = base_url + filter_url + current_time_url + weather_vars_url + region_url
-    print(current_url)
     next_url = base_url + filter_url + next_time_url + weather_vars_url + region_url
-    print(next_url)
+    
+    current_file_path = os.path.join("assets", f"d{date}c{cycle}o{str(offset_time).zfill(3)}bl{geo_bounds['btm_lat']}tl{geo_bounds['top_lat']}ll{geo_bounds['left_lon']}rl{geo_bounds['right_lon']}")
+    
+    next_file_path = os.path.join("assets", f"d{date}c{cycle}o{str(offset_time+1).zfill(3)}bl{geo_bounds['btm_lat']}tl{geo_bounds['top_lat']}ll{geo_bounds['left_lon']}rl{geo_bounds['right_lon']}")
+
+    if os.path.exists(current_file_path) and os.path.exists(next_file_path):
+        print(f"Le fichier existe déjà. Téléchargement ignoré.")
+        return current_file_path, next_file_path
+    
     current_r = requests.get(current_url)
-    # current_r = requests.get(url_test)
     next_r = requests.get(next_url)
 
     print(f"Date: {date}, Cycle: {cycle}, Geo Bounds: {geo_bounds}")
 
     if current_r.status_code == 200:
-        current_file_path = os.path.join("assets", f"d{date}c{cycle}o{str(offset_time).zfill(3)}bl{geo_bounds['btm_lat']}tl{geo_bounds['top_lat']}ll{geo_bounds['left_lon']}rl{geo_bounds['right_lon']}")
         with open(current_file_path, "wb") as file:
             file.write(current_r.content)
         print("Le téléchargement CURRENT à réussi!")
     else:
         print(f"Erreur {current_r.status_code}: Le téléchargement CURRENT a échoué.")
     if next_r.status_code == 200:
-        next_file_path = os.path.join("assets", f"d{date}c{cycle}o{str(offset_time+1).zfill(3)}bl{geo_bounds['btm_lat']}tl{geo_bounds['top_lat']}ll{geo_bounds['left_lon']}rl{geo_bounds['right_lon']}")
         with open(next_file_path, "wb") as file:
             file.write(next_r.content)
         print("Le téléchargement NEXT à réussi!")
@@ -52,15 +58,36 @@ def download_grib_file(date, cycle, offset_time, geo_bounds):
 def download_next_grib_file(date, cycle, offset_time, geo_bounds):
     base_url = "https://nomads.ncep.noaa.gov/cgi-bin/"
     filter_url = "filter_gfs_0p25_1hr.pl?dir=%2Fgfs."
-    next_time_url= f"{date}%2F{cycle}%2Fatmos&file=gfs.t{cycle}z.pgrb2.0p25.f{str(offset_time).zfill(3)}&"
+    next_time_url= f"{date}%2F{cycle}%2Fatmos&file=gfs.t{cycle}z.pgrb2.0p25.f{str(offset_time+1).zfill(3)}&"
+
     weather_vars_url = "var_DZDT=on&var_HGT=on&var_RH=on&var_TMP=on&var_UGRD=on&var_VGRD=on&lev_1000_mb=on&lev_975_mb=on&lev_950_mb=on&lev_925_mb=on&lev_900_mb=on&lev_850_mb=on&lev_800_mb=on&lev_750_mb=on&lev_700_mb=on&lev_650_mb=on&lev_600_mb=on&lev_550_mb=on&lev_500_mb=on&lev_450_mb=on&lev_400_mb=on&lev_350_mb=on&lev_300_mb=on&lev_250_mb=on&lev_200_mb=on&lev_150_mb=on&lev_100_mb=on&lev_70_mb=on&lev_50_mb=on&lev_40_mb=on&lev_30_mb=on&lev_20_mb=on&lev_15_mb=on&lev_10_mb=on&lev_7_mb=on&lev_5_mb=on&lev_3_mb=on&lev_2_mb=on&lev_1_mb=on&lev_surface=on&"
+
     region_url = f"subregion=&toplat={geo_bounds['top_lat']}&leftlon={geo_bounds['left_lon']}&rightlon={geo_bounds['right_lon']}&bottomlat={geo_bounds['btm_lat']}"
 
-    next_url = base_url + filter_url + next_time_url + weather_vars_url + region_url
-    next_r = requests.get(next_url)
+    # Crée des variations de +/- 0.1 autour de geo_bounds
+    variations = [
+        {"btm_lat": geo_bounds['btm_lat'] - 0.1, "top_lat": geo_bounds['top_lat'] - 0.1, "left_lon": geo_bounds['left_lon'] - 0.1, "right_lon": geo_bounds['right_lon'] - 0.1},
+        {"btm_lat": geo_bounds['btm_lat'] - 0.1, "top_lat": geo_bounds['top_lat'] - 0.1, "left_lon": geo_bounds['left_lon'] + 0.1, "right_lon": geo_bounds['right_lon'] + 0.1},
+        {"btm_lat": geo_bounds['btm_lat'] + 0.1, "top_lat": geo_bounds['top_lat'] + 0.1, "left_lon": geo_bounds['left_lon'] - 0.1, "right_lon": geo_bounds['right_lon'] - 0.1},
+        {"btm_lat": geo_bounds['btm_lat'] + 0.1, "top_lat": geo_bounds['top_lat'] + 0.1, "left_lon": geo_bounds['left_lon'] + 0.1, "right_lon": geo_bounds['right_lon'] + 0.1},
+    ]
 
+    # Check si un fichier autour des variations existe
+    for var in variations:
+        # Crée le file path en fonction de la variation
+        next_file_path = os.path.join("assets", f"d{date}c{cycle}o{str(offset_time+1).zfill(3)}bl{geo_bounds['btm_lat']}tl{geo_bounds['top_lat']}ll{geo_bounds['left_lon']}rl{geo_bounds['right_lon']}")
+
+        # Check si fichier existe déjà autour de lat, lon +/- 0.1
+        if os.path.exists(next_file_path):
+            print(f"Le fichier existe déjà. Téléchargement ignoré.")
+            return next_file_path
+    
+    # URL entier
+    next_url = base_url + filter_url + next_time_url + weather_vars_url + region_url
+
+    # DL fichier
+    next_r = requests.get(next_url)
     if next_r.status_code == 200:
-        next_file_path = os.path.join("assets", f"d{date}c{cycle}o{offset_time}bl{geo_bounds['btm_lat']}tl{geo_bounds['top_lat']}ll{geo_bounds['left_lon']}rl{geo_bounds['right_lon']}")
         with open(next_file_path, "wb") as file:
             file.write(next_r.content)
         print("Téléchargement NEXT réussi!")

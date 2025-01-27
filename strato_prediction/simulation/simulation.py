@@ -94,7 +94,7 @@ class Balloon:
             bounds_error=False,
             fill_value=69420
         )
-
+    def prepare_air_density_interpolators(self, data):
         self.humidity_interpolator = RegularGridInterpolator(
             (data['pressure'], data['latitude'], data['longitude']),
             data['humidity'],
