@@ -1,0 +1,34 @@
+# Exclude Python cache files and folders
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Exclude virtual environment folders
+env/
+venv/
+ENV/
+.VENV/
+
+# Exclude VS Code-specific files
+.vscode/
+
+# Exclude logs and temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.DS_Store
+
+# Exclude system-specific files
+Thumbs.db
+desktop.ini
+
+# Exclude spcific files and folders
+assets/
+test_isha.py
+tests_geo.py
+gph_saved.py
+carte_interactive.html
+poetry.lock
