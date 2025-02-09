@@ -166,27 +166,27 @@ def interpolate_data(current_pressure_dataset, next_pressure_dataset, surface_da
     # target_index = (abs(pressure_levels - pressure)).argmin()  # Indice le plus proche
     # indices = slice(max(0, target_index - 2), min(len(pressure_levels), target_index + 3))
     current_pressure_subset = current_pressure_dataset.sel(
-        latitude = slice(lat - 0.5, lat + 0.5),
-        longitude = slice(lon - 0.5, lon + 0.5)
+        latitude = slice(lat - 1., lat + 1.),
+        longitude = slice(lon - 1., lon + 1.)
     )
     next_pressure_subset = next_pressure_dataset.sel(
-        latitude = slice(lat - 0.5, lat + 0.5),
-        longitude = slice(lon - 0.5, lon + 0.5)
+        latitude = slice(lat - 1., lat + 1.),
+        longitude = slice(lon - 1., lon + 1.)
     )
     # next_pressure_subset = next_pressure_dataset.isel(isobaricInhPa=indices).sel(
-    #     latitude = slice(lat - 0.5, lat + 0.5),
-    #     longitude = slice(lon - 0.5, lon + 0.5)
+    #     latitude = slice(lat - 1., lat + 1.),
+    #     longitude = slice(lon - 1., lon + 1.)
     # )
     surface_subset = surface_dataset.sel(
-        latitude = slice(lat - 0.5, lat + 0.5),
-        longitude = slice(lon - 0.5, lon + 0.5)
+        latitude = slice(lat - 1., lat + 1.),
+        longitude = slice(lon - 1., lon + 1.)
     )
 
     current_pressure_subset = current_pressure_subset.assign_coords(time =hour*3600)
     next_pressure_subset = next_pressure_subset.assign_coords(time =(hour+1)*3600)
     
     combined_pressure_subset = xr.concat([current_pressure_subset,next_pressure_subset], dim = "time")
-
+    print(hour, target_time)
     data = {
         'pressure': combined_pressure_subset.isobaricInhPa.values,
         'latitude': combined_pressure_subset.latitude.values,

@@ -8,11 +8,10 @@ class Balloon:
     Classe représentant un ballon atmosphérique pour simuler son déplacement.
     """
 
-    def __init__(self, data, start_lon, start_lat, start_pressure, w_speed=5.32, time_step=1., mass=1.0, parachute_surface=1.13, drag_coeff=1.2):
+    def __init__(self, data, start_lon, start_lat, start_pressure, w_speed=6.22, time_step=60, mass=1.0, parachute_surface=1.13, drag_coeff=1.2):
         # Initialisation des paramètres du ballon
         self.lat = start_lat
         self.lon = start_lon
-        self.pressure = start_pressure
         self.w_speed = w_speed 
         self.time_step = time_step
         self.time_flying = 0
@@ -25,6 +24,7 @@ class Balloon:
         self.temp_interpolator = None
         self.prepare_interpolators(data)
         self.altitude = self.get_surface_level_at_coords()
+        self.pressure = self.get_pressure_at_point(data)
         self.trajectory = {
             'longitudes': [self.lon],
             'latitudes': [self.lat],
@@ -44,7 +44,6 @@ class Balloon:
         """
         self.lon = start_lon
         self.lat = start_lat
-        self.pressure = start_pressure
         self.time_flying = 0
         self.u_interpolator = None
         self.v_interpolator = None
@@ -54,7 +53,8 @@ class Balloon:
         self.humidity_interpolator = None
         self.temp_interpolator = None
         self.prepare_interpolators(data)
-        self.altitude = 932 #self.get_surface_level_at_coords()
+        self.altitude = self.get_surface_level_at_coords()
+        self.pressure = self.get_pressure_at_point(data)
         self.trajectory = {
             'longitudes': [self.lon],
             'latitudes': [self.lat],
